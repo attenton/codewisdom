@@ -30,7 +30,7 @@ export default {
     getNodeData (id) {
       let node = {}
       axios
-        .post('http://bigcode.fudan.edu.cn/kg/getNodeByID/', {id: id})
+        .post('http://bigcode.fudan.edu.cn/kg-debug/getNodeByID/', {id: id})
         .then(response => {
           node.id = response.data['id']
           node.label = response.data['name']
@@ -42,13 +42,13 @@ export default {
     },
     getNodeRelation (id) {
       axios
-        .post('http://bigcode.fudan.edu.cn/kg/GetOutRelation/', {id: id, page_number: 0})
+        .post('http://bigcode.fudan.edu.cn/kg-debug/GetOutRelation/', {id: id, page_number: 0})
         .then(response => {
           // console.log(response)
           response.data.relations.forEach(async (relation) => {
             let edge = {}
             await axios
-              .post('http://bigcode.fudan.edu.cn/kg/getNodeByID/', {id: relation.end_id})
+              .post('http://bigcode.fudan.edu.cn/kg-debug/getNodeByID/', {id: relation.end_id})
               .then(response2 => {
                 let node = {}
                 // console.log(response2)

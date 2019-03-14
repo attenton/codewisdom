@@ -99,20 +99,20 @@ export default {
   },
   methods: {
     discover () {
-      this.$router.push('graph')
+      this.$router.push('forceGraph')
     }
   },
   mounted () {
     axios
-      .post('http://bigcode.fudan.edu.cn/kg/GetPopularNodes/', {top_number: this.top_number})
+      .post('http://bigcode.fudan.edu.cn/kg-debug/GetPopularNodes/', {top_number: this.top_number})
       .then(response => { (this.popular_data = response.data.nodes) })
       .catch(error => console.log(error))
     axios
-      .post('http://bigcode.fudan.edu.cn/kg/GetNewNodes/', {top_number: this.top_number})
+      .post('http://bigcode.fudan.edu.cn/kg-debug/GetNewNodes/', {top_number: this.top_number})
       .then(response => { (this.recent_data = response.data.nodes) })
       .catch(error => console.log(error))
     axios
-      .post('http://bigcode.fudan.edu.cn/kg/GetKnowledgeGraphMetaData/')
+      .post('http://bigcode.fudan.edu.cn/kg-debug/GetKnowledgeGraphMetaData/')
       .then(response => { (this.statistics_data = response.data) })
       .catch(error => console.log(error))
   }
