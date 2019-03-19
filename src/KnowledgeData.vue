@@ -2,18 +2,22 @@
     <div class="background">
       <div class="forward container" >
         <div class="side_bar">
-          <ul>
-            <li a href="#Title">Table of Content</li>
-            <li><a href="#Knowledge_Graph">Knowledge Graph</a></li>
-            <li><a href="#Properties">Properties</a></li>
+          <ul class="nav_sidebar">
+            <li><a @click="changeHash('#APIContent')">Table of Content</a></li>
+            <li><a @click="changeHash('#Knowledge_Graph')">Knowledge Graph</a></li>
+            <li><a @click="changeHash('#Properties')">Properties</a></li>
               <ul>
-                <li v-for="(value, key) in majority_properties" :key="key +'toc'"><a :href="'#'+key">{{key}}</a></li>
+                <li v-for="(value, key, index) in majority_properties" :key="key +'toc'"><a @click="changeHash('#'+'pro'+index)">{{key}}</a></li>
               </ul>
-            <li><a href="#Relations">Relations</a></li>
+            <li v-show="relation_name.length > 0"><a @click="changeHash('#Relations')" >Relations</a></li>
+            <li v-show="lang.length > 0"><a @click="changeHash('#Labels')">Labels</a></li>
           </ul>
         </div>
-        <div class="API_Content">
-          <h1>{{ name }} <span style="font-size:18px;">{{ labels[0] }}</span></h1>
+        <div class="API_Content" >
+          <div class="APIContent" id="APIContent">
+          <h1>{{ name }} </h1>
+          <div><span class="node_tag" :style="{ background : bColor }">{{ labels[0] }}</span></div>
+          <hr>
           <div id="graph" class="section">
             <h4 id="Knowledge_Graph">Knowledge Graph</h4>
             <el-row>
@@ -26,8 +30,8 @@
             <h4 id="Properties">Properties</h4>
             <hr>
             <div>
-                <dl v-for="(value, key) in majority_properties" :key=" value + key + 'majority_properties'">
-                  <dt :name="key">{{key}} :</dt>
+                <dl v-for="(value, key, index) in majority_properties" :key=" value + key + 'majority_properties'">
+                  <dt :id="'pro' + index">{{key}} :</dt>
                   <dd v-if="typeof value == 'string'">{{value}}</dd>
                   <dd v-if="typeof value == 'number'">{{value}}</dd>
                   <dd v-else-if="typeof value == 'object'" v-for="li in value" :key="li + key + 'majority_properties'">{{li}}</dd>
@@ -57,7 +61,7 @@
             </div>
           </div>
           <div id="language" v-show="lang.length > 0" class="section">
-            <h4 name="Labels">Labels</h4>
+            <h4 id="Labels">Labels</h4>
             <hr>
             <el-table :data="language_table.slice(0,label_show)" scope="scope" style="width: 70%;">
               <el-table-column label="language" >
@@ -70,7 +74,7 @@
               <el-table-column prop="alias" label="alias"></el-table-column>
             </el-table>
             <el-button type="text" @click="dialogLabelVisible = true" v-show="label_show < lang.length || l_show != '+more'">{{l_show}}</el-button>
-            <el-dialog title="Label" :visible.sync="dialogLabelVisible" >
+            <el-dialog title="Label" :visible.sync="dialogLabelVisible" style="" :center="true" >
               <el-table :data="language_table" scope="scope" >
                 <el-table-column label="language" >
                   <template slot-scope="scope">
@@ -83,6 +87,7 @@
               </el-table>
             </el-dialog>
           </div>
+        </div>
         </div>
       </div>
     </div>
@@ -121,7 +126,8 @@ export default {
       r_show: '+more',
       dialogLabelVisible: false,
       graphShow: false,
-      graphString: 'Display Graph'
+      graphString: 'Display Graph',
+      bColor: '#fff'
     }
   },
   created () {
@@ -133,8 +139,11 @@ export default {
       if (this.graphString === 'Hide Graph') this.graphString = 'Display Graph'
       else if (this.graphString === 'Display Graph') this.graphString = 'Hide Graph'
     },
+    changeHash (idName) {
+      document.querySelector(idName).scrollIntoView(true)
+    },
     GoGraph () {
-      this.$router.push({name: 'graph', params: { id: this.id }})
+      this.$router.push({name: 'SVGForceGraph', params: { id: this.id }})
     },
     show_more_relation () {
       this.relation_show = (this.relation_show === this.relation_name.length) ? 5 : this.relation_name.length
@@ -202,12 +211,28 @@ export default {
           this.name = response.data.name
           this.properties = response.data.properties
           this.labels = response.data.labels
+          this.bColor = this.labelColor(this.labels[0])
           this.majority_properties = response.data.majority_properties
           this.handleProperty(this.properties)
           this.handleAll(this.lang, this.label_list, this.description_list, this.alias_list)
           // console.log(this.majority_properties)
         })
         .catch(error => (console.log(error)))
+    },
+    labelColor (label) {
+      switch (label) {
+        case 'Software Concept': return '#1e88e4'
+        case 'Descriptive Knowledge': return '#4DCF74'
+        case 'API Concept': return '#BFD0E0'
+        case 'API Package': return '#E9B872'
+        case 'API Class': return '#3CBBB1'
+        case 'API Interface': return '#DD1C1A'
+        case 'API Field': return '#6369D1'
+        case 'API Method': return '#105C38'
+        case 'API Parameter': return '#454C63'
+        case 'API Return Value': return '#B84569'
+        case 'Exception': return '#7697C2'
+      }
     },
     getNodeRelation () {
       axios
@@ -238,6 +263,13 @@ export default {
   mounted () {
     this.getNodeData()
     this.getNodeRelation()
+  },
+  watch: {
+    '$route': function () {
+      this.id = this.$route.params.id
+      this.getNodeData()
+      this.getNodeRelation()
+    }
   }
 }
 </script>
@@ -250,15 +282,8 @@ export default {
   padding-bottom: 30px;
   padding-left: auto;
   padding-right: auto;
-  background-color: rgba(245,245,245,0.8);
+  /*background-color: rgba(245,245,245,0.8);*/
 }
-.forward{
-  border-radius: 1px;
-  border: 1px solid rgba(0,0,0,.1);
-  border-shadow: 0 2px 8px rgba(84, 48, 132, 0.1);
-  background-color: #fff;
-}
-
 .section{
   margin-top: 30px;
 }
@@ -276,17 +301,69 @@ export default {
   /*border: solid 1px grey;*/
 /*}*/
 .el-dialog{
-  position: absolute;
-  top: 20%;
-  left: 50%;
-  margin: 0 !important;
-  transform: translate(-50%, -50%);
-  max-height: 700px !important;
-  display: flex !important;
-  flex-direction: column !important;
+  /*position: absolute;*/
+  /*top: 20%;*/
+  /*left: 50%;*/
+  /*margin: 0 !important;*/
+  /*max-height: calc(100% - 30px);*/
+  /*max-width: calc(100% - 30px);*/
+  /*transform: translate(-50%, -50%);*/
+  /*display: flex !important;*/
+  /*flex-direction: column !important;*/
 }
 .el-dialog__body{
-  height: 700px!important;
-  overflow: auto!important;
+  /*height: 700px!important;*/
+  /*overflow: auto!important;*/
+}
+ul{
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .side_bar{
+    float: left;
+  }
+  .API_Content{
+    margin-left: 250px;
+    padding: 0 40px;
+  }
+  .nav_sidebar{
+    position: fixed;
+    top: 0;
+    padding-top: 40px;
+    max-height: 100%;
+    overflow-y: auto;
+    width: 230px;
+    padding-left: 0;
+  }
+}
+.active{
+  font-weight: bold;
+  color: #1e88e5;
+}
+.nav_sidebar > li:after{
+  display: block;
+  content: "";
+  clear: both;
+}
+.node_tag{
+  display: inline-block;
+  height: 28px;
+  line-height: 28px;
+  border-radius: 3px;
+  color: #fff !important;
+  background-color: #1e88e4;
+  padding: 0px 10px;
+  white-space: nowrap;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0px 0px 8px 6px;
+}
+.node_tag:hover{
+  color:#fff !important;;
+}
+a:hover{
+  cursor: pointer;
 }
 </style>

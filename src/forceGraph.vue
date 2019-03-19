@@ -1,9 +1,7 @@
 <template>
-  <div id='force_graph'>
-    <div id='graph_canvas'>
-      <canvas ref="canvas" height=600 width=1200></canvas>
+    <div id='graph_canvas' class="x">
+      <canvas ref="canvas"></canvas>
     </div>
-  </div>
 </template>
 
 <script>
@@ -27,7 +25,6 @@ export default {
       height: null,
       strength: -60,
       link_distance: 90,
-      canvas: document.querySelector('canvas'),
       e: null,
       getIterator: -1
     }
@@ -66,13 +63,15 @@ export default {
     },
     // graph init
     force_graph_init () {
-      const canvas = document.querySelector('canvas')
+      var canvas = document.querySelector('canvas')
+      canvas.width = document.querySelector('#graph').offsetWidth
+      canvas.height = canvas.width / 1.5
       this.e = canvas.getContext('2d')
       this.width = canvas.width
       this.height = canvas.height
       this.graph = d3.forceSimulation(this.nodes).force('center', d3.forceCenter(this.width / 2, this.height / 2))
       this.graph.force('charge', d3.forceManyBody())
-        .force('collide', d3.forceCollide(3 * 20))
+        .force('collide', d3.forceCollide(this.width / 20))
         .force('link', d3.forceLink().id(d => { return d.id }).distance(this.link_distance))
       this.graph.on('tick', this.render)
       this.graph.force('link').links(this.edges)
@@ -98,7 +97,7 @@ export default {
         this.e.fillStyle = 'red'
         this.e.beginPath()
         // 起始点坐标，圆的半径，起始角，弧度值
-        this.e.arc(a.x, a.y, 27, 0, 2 * Math.PI)
+        this.e.arc(a.x, a.y, this.width / 45, 0, 2 * Math.PI)
         this.e.fill()
         this.e.stroke()
       })
@@ -158,6 +157,10 @@ export default {
     graphData: function (val) {
       console.log(val)
       this.getNodeRelation(val.id)
+    },
+    '$route': function () {
+      this.graphData = this.$route.params.id
+      this.getNodeRelation(this.graphData)
     }
   }
 }
@@ -165,7 +168,6 @@ export default {
 
 <style scoped>
 #graph_canvas {
-  width: 1300px;
   margin: 20px auto;
 }
 </style>

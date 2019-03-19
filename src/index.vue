@@ -99,7 +99,7 @@ export default {
   },
   methods: {
     discover () {
-      this.$router.push('forceGraph')
+      this.$router.push('Search')
     }
   },
   mounted () {

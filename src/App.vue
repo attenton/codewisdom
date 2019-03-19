@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view/>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -33,7 +33,7 @@ export default {
     font-family: "Raleway", Helvetica, Arial, sans-serif;
     -webkit-font-feature-settings: "lunm";
     font-feature-settings: "lunm";
-    background-color: rgba(245,245,245,0.8);
+    /*background-color: rgba(245,245,245,0.8);*/
     word-wrap:break-word;
 }
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {

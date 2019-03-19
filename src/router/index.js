@@ -5,8 +5,7 @@ import display from '@/components/display'
 import index from '../index'
 import KnowledgeData from '../KnowledgeData'
 import Search from '../Search'
-import graph from '../graph'
-import forceGraph from '../forceGraph'
+import SVGForceGraph from '../SVGForceGraph'
 
 Vue.use(Router)
 
@@ -38,14 +37,9 @@ export default new Router({
       component: KnowledgeData
     },
     {
-      path: '/graph/:id',
-      name: 'graph',
-      component: graph
-    },
-    {
-      path: '/forceGraph/:id',
-      name: 'forceGraph',
-      component: forceGraph
+      path: '/SVGForceGraph/:id',
+      name: 'SVGForceGraph',
+      component: SVGForceGraph
     }
   ]
 })
