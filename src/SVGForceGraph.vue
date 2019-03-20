@@ -1,12 +1,13 @@
 <template>
     <div id="graph" class="container">
-      <div id="svg_graph" @click="expand"></div>
+      <div id="svg_graph" v-loading="loading"></div>
     </div>
 </template>
 
 <script>
 import axios from 'axios'
 import * as d3 from 'd3'
+// import { Notification } from 'element-ui'
 // import '../assets/labelCorlor.js'
 
 export default {
@@ -23,11 +24,13 @@ export default {
       nodes: [],
       edges: [],
       sim: null,
+      svg: null,
       g: null,
       link_distance: 90,
       svg_links: null,
       svg_nodes: null,
-      svg_texts: null
+      svg_texts: null,
+      loading: true
     }
   },
   methods: {
@@ -35,8 +38,6 @@ export default {
       axios
         .post('http://bigcode.fudan.edu.cn/kg-debug/expandNode/', {id: id})
         .then(response => {
-          this.edges = []
-          this.nodes = []
           response.data.relations.forEach((relation) => {
             let edge = {}
             edge.target = relation.end_id
@@ -64,7 +65,7 @@ export default {
       this.width = 800
       this.height = 600
       // init svg
-      var svg = d3.select('#svg_graph')
+      this.svg = d3.select('#svg_graph')
         .append('svg')
         .attr('width', this.width)
         .attr('height', this.height)
@@ -72,7 +73,7 @@ export default {
           .scaleExtent([-5, 2])
           // for zoom transform
           .on('zoom', this.zoom_actions))
-      this.g = svg.append('g')
+      this.g = this.svg.append('g')
         .attr('class', 'svg_graph_container')
       // init links
       this.sim = d3.forceSimulation(this.nodes).force('center', d3.forceCenter(this.width / 2, this.height / 2))
@@ -123,53 +124,117 @@ export default {
               .on('end', this.end_drag)
           )
       })
-      // this.svg_nodes = this.g.append('g')
-      //   .attr('class', 'nodes')
-      //   .selectAll('circle')
-      //   .data(this.nodes)
-      //   .enter()
-      //   .append('circle')
-      //   .attr('r', '21')
-      //   .style('fill', function (d) {
-      //     switch (d.labels[0]) {
-      //       case 'Software Concept': return '#1e88e4'
-      //       case 'Descriptive Knowledge': return '#4DCF74'
-      //       case 'API Concept': return '#BFD0E0'
-      //       case 'API Package': return '#E9B872'
-      //       case 'API Class': return '#3CBBB1'
-      //       case 'API Interface': return '#DD1C1A'
-      //       case 'API Field': return '#6369D1'
-      //       case 'API Method': return '#105C38'
-      //       case 'API Parameter': return '#454C63'
-      //       case 'API Return Value': return '#B84569'
-      //       case 'Exception': return '#7697C2'
-      //     }
-      //     console.log(this.labelColor(d.labels[0]))
-      //     // return 'red'
-      //   })
-      //   .style('stroke', '#D1D1D1')
-      //   .style('stroke-width', 2)
-      //   .call(
-      //     d3.drag()
-      //       .on('start', this.start_drag)
-      //       .on('drag', this.drag_effect)
-      //       .on('end', this.end_drag)
-      //   )
-      // this.svg_texts = this.g.append('g')
-      //   .selectAll('text')
-      //   .data(this.nodes)
-      //   .enter()
-      //   .append('text')
-      //   .style('fill', 'black')
-      //   .attr('dx', 0)
-      //   .attr('dy', 7)
-      //   .style('font-family', 'Raleway')
-      //   .attr('pointer-events', 'none')
-      //   .attr('text-anchor', 'middle')
-      //   .text(function (d) {
-      //     return d.name
-      //   })
+      this.svg_nodes = this.g.append('g')
+        .attr('class', 'nodes')
+        .selectAll('circle')
+        .data(this.nodes)
+        .enter()
+        .append('circle')
+        .attr('r', '21')
+        .attr('node_id', function (d) {
+          return d.id
+        })
+        .style('fill', function (d) {
+          switch (d.labels[0]) {
+            case 'Software Concept': return '#1e88e4'
+            case 'Descriptive Knowledge': return '#4DCF74'
+            case 'API Concept': return '#BFD0E0'
+            case 'API Package': return '#E9B872'
+            case 'API Class': return '#3CBBB1'
+            case 'API Interface': return '#DD1C1A'
+            case 'API Field': return '#6369D1'
+            case 'API Method': return '#105C38'
+            case 'API Parameter': return '#454C63'
+            case 'API Return Value': return '#B84569'
+            case 'Exception': return '#7697C2'
+          }
+          console.log(this.labelColor(d.labels[0]))
+          // return 'red'
+        })
+        .style('stroke', '#D1D1D1')
+        .style('stroke-width', 2)
+        .call(
+          d3.drag()
+            .on('start', this.start_drag)
+            .on('drag', this.drag_effect)
+            .on('end', this.end_drag)
+        )
+      this.svg_texts = this.g.append('g')
+        .attr('class', 'SVGtext')
+        .selectAll('text')
+        .data(this.nodes)
+        .enter()
+        .append('text')
+        .style('fill', 'black')
+        .attr('dx', 0)
+        .attr('dy', 7)
+        .style('font-family', 'Raleway')
+        .attr('pointer-events', 'none')
+        .attr('text-anchor', 'middle')
+        .text(function (d) {
+          return d.name
+        })
       this.sim.on('tick', this.ticked)
+      this.loading = false
+    },
+    updateGraph () {
+      let svgNode = this.svg_nodes.selectAll('circle').data(this.nodes, d => d)
+      svgNode.exit().remove()
+      this.svg_nodes = svgNode
+      // svgNode.exit().remove()
+      console.log(this.nodes)
+      let nodeEnter = svgNode
+        .enter()
+        .append('circle')
+        .attr('r', '21')
+        .attr('node_id', function (d) {
+          return d.id
+        })
+        .style('fill', function (d) {
+          switch (d.labels[0]) {
+            case 'Software Concept': return '#1e88e4'
+            case 'Descriptive Knowledge': return '#4DCF74'
+            case 'API Concept': return '#BFD0E0'
+            case 'API Package': return '#E9B872'
+            case 'API Class': return '#3CBBB1'
+            case 'API Interface': return '#DD1C1A'
+            case 'API Field': return '#6369D1'
+            case 'API Method': return '#105C38'
+            case 'API Parameter': return '#454C63'
+            case 'API Return Value': return '#B84569'
+            case 'Exception': return '#7697C2'
+          }
+          console.log(this.labelColor(d.labels[0]))
+          // return 'red'
+        })
+        .style('stroke', '#D1D1D1')
+        .style('stroke-width', 2)
+        .call(
+          d3.drag()
+            .on('start', this.start_drag)
+            .on('drag', this.drag_effect)
+            .on('end', this.end_drag)
+        )
+      this.svg_nodes = nodeEnter.merge(svgNode)
+      this.svg_links.selectAll('line')
+        .data(this.edges)
+        .enter()
+        .append('line')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 2)
+      this.svg_texts.selectAll('text')
+        .data(this.nodes)
+        .enter()
+        .append('text')
+        .style('fill', 'black')
+        .attr('dx', 0)
+        .attr('dy', 7)
+        .style('font-family', 'Raleway')
+        .attr('pointer-events', 'none')
+        .attr('text-anchor', 'middle')
+        .text(function (d) {
+          return d.name
+        })
     },
     ticked () {
       this.svg_links
@@ -180,9 +245,62 @@ export default {
       this.svg_nodes
         .attr('cx', function (d) { return d.x })
         .attr('cy', function (d) { return d.y })
-      // this.svg_texts
-      //   .attr('x', function (d) { return d.x })
-      //   .attr('y', function (d) { return d.y })
+      // this.g.selectAll('circle').on('click', function (d) {
+      //   let id = d.id
+      //   // let _this = this
+      //   axios
+      //     .post('http://bigcode.fudan.edu.cn/kg-debug/getNodeByID/', {id: id})
+      //     .then(response => {
+      //       let data = response.data
+      //       console.log(response)
+      //       Notification({
+      //         title: d.name,
+      //         // message: d.name
+      //         dangerouslyUseHTMLString: true,
+      //         message: '<span class="node_tag" style=" color: ' + '#1e88e4' + ' ">' + data.labels[0] + '</span><br>' +
+      //           '<a href="/KnowledgeData/ ' + id + '">ID: ' + id + '</a><br>',
+      //         duration: 0
+      //       })
+      //     })
+      // })
+      this.svg.on('dblclick.zoom', null)
+      let _this = this
+      this.g.selectAll('circle').on('dblclick', function (d) {
+        let id = d.id
+        axios
+          .post('http://bigcode.fudan.edu.cn/kg-debug/expandNode/', {id: id})
+          .then(response => {
+            let edgesId = _this.edges.id
+            let NodeId = _this.nodes.id
+            console.log(NodeId)
+            for (let i = 0; i < response.data.relations.length; i++) {
+              let relation = response.data.relations[i]
+              if (edgesId.find(relation.id)) {
+                continue
+              }
+              let edge = {}
+              edge.target = relation.end_id
+              edge.source = relation.start_id
+              edge.id = relation.id
+              edge.name = relation.name
+              _this.$set(_this.edges, _this.edges.length, edge)
+            }
+            for (let i = 0; i < response.data.nodes.length; i++) {
+              let relatedNode = response.data.nodes[i]
+              if (NodeId.find(relatedNode.id)) continue
+              let node = {}
+              node.id = relatedNode.id
+              node.name = relatedNode.name
+              node.labels = relatedNode.labels
+              _this.$set(_this.nodes, _this.nodes.length, node)
+            }
+            _this.updateGraph()
+          })
+          .catch(error => console.log(error))
+      })
+      this.svg_texts
+        .attr('x', function (d) { return d.x })
+        .attr('y', function (d) { return d.y })
     },
     zoom_actions () {
       this.g.attr('transform', d3.event.transform)
@@ -216,12 +334,12 @@ export default {
         case 'API Return Value': return '#B84569'
         case 'Exception': return '#7697C2'
       }
-    },
-    expand (e) {
-      if (e.target.class === 'node') {
-
-      }
     }
+    // expand (e) {
+    //   if (e.target.class === 'node') {
+    //
+    //   }
+    // }
   },
   mounted () {
     this.getNodeRelation(this.id)
@@ -241,5 +359,18 @@ export default {
 @import "assets/font/Raleway.css";
 .svg_graph_container{
   margin: 0 auto;
+}
+.node_tag{
+  display: inline-block;
+  height: 28px;
+  line-height: 28px;
+  border-radius: 3px;
+  color: #fff !important;
+  background-color: #1e88e4;
+  padding: 0px 10px;
+  white-space: nowrap;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
 }
 </style>
