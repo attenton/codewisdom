@@ -1,6 +1,6 @@
 <template>
     <div id="graph" class="container">
-      <div id="svg_graph"></div>
+      <div id="svg_graph" @click="expand"></div>
     </div>
 </template>
 
@@ -88,52 +88,87 @@ export default {
         .append('line')
         .attr('stroke', 'black')
         .attr('stroke-width', 2)
-      this.svg_nodes = this.g.append('g')
-        .attr('class', 'nodes')
-        .selectAll('circle')
-        .data(this.nodes)
-        .enter()
-        .append('circle')
-        .attr('r', '21')
-        .style('fill', function (d) {
-          switch (d.labels[0]) {
-            case 'Software Concept': return '#1e88e4'
-            case 'Descriptive Knowledge': return '#4DCF74'
-            case 'API Concept': return '#BFD0E0'
-            case 'API Package': return '#E9B872'
-            case 'API Class': return '#3CBBB1'
-            case 'API Interface': return '#DD1C1A'
-            case 'API Field': return '#6369D1'
-            case 'API Method': return '#105C38'
-            case 'API Parameter': return '#454C63'
-            case 'API Return Value': return '#B84569'
-            case 'Exception': return '#7697C2'
-          }
-          console.log(this.labelColor(d.labels[0]))
-          // return 'red'
-        })
-        .style('stroke', '#D1D1D1')
-        .style('stroke-width', 2)
-        .call(
-          d3.drag()
-            .on('start', this.start_drag)
-            .on('drag', this.drag_effect)
-            .on('end', this.end_drag)
-        )
-      this.svg_texts = this.g.append('g')
-        .selectAll('text')
-        .data(this.nodes)
-        .enter()
-        .append('text')
-        .style('fill', 'black')
-        .attr('dx', 0)
-        .attr('dy', 7)
-        .style('font-family', 'Raleway')
-        .attr('pointer-events', 'none')
-        .attr('text-anchor', 'middle')
-        .text(function (d) {
-          return d.name
-        })
+      this.svg_nodes = this.g.append('g').attr('class', 'nodes')
+      this.nodes.forEach(node => {
+        this.svg_nodes.append('g')
+          .attr('class', 'node')
+          .attr('node_id', node.id)
+          .data(node)
+          .enter()
+          .append('circle')
+          .attr('r', '21')
+          .style('fill', function (d) {
+            switch (d.labels[0]) {
+              case 'Software Concept': return '#1e88e4'
+              case 'Descriptive Knowledge': return '#4DCF74'
+              case 'API Concept': return '#BFD0E0'
+              case 'API Package': return '#E9B872'
+              case 'API Class': return '#3CBBB1'
+              case 'API Interface': return '#DD1C1A'
+              case 'API Field': return '#6369D1'
+              case 'API Method': return '#105C38'
+              case 'API Parameter': return '#454C63'
+              case 'API Return Value': return '#B84569'
+              case 'Exception': return '#7697C2'
+            }
+            console.log(this.labelColor(d.labels[0]))
+            // return 'red'
+          })
+          .style('stroke', '#D1D1D1')
+          .style('stroke-width', 2)
+          .call(
+            d3.drag()
+              .on('start', this.start_drag)
+              .on('drag', this.drag_effect)
+              .on('end', this.end_drag)
+          )
+      })
+      // this.svg_nodes = this.g.append('g')
+      //   .attr('class', 'nodes')
+      //   .selectAll('circle')
+      //   .data(this.nodes)
+      //   .enter()
+      //   .append('circle')
+      //   .attr('r', '21')
+      //   .style('fill', function (d) {
+      //     switch (d.labels[0]) {
+      //       case 'Software Concept': return '#1e88e4'
+      //       case 'Descriptive Knowledge': return '#4DCF74'
+      //       case 'API Concept': return '#BFD0E0'
+      //       case 'API Package': return '#E9B872'
+      //       case 'API Class': return '#3CBBB1'
+      //       case 'API Interface': return '#DD1C1A'
+      //       case 'API Field': return '#6369D1'
+      //       case 'API Method': return '#105C38'
+      //       case 'API Parameter': return '#454C63'
+      //       case 'API Return Value': return '#B84569'
+      //       case 'Exception': return '#7697C2'
+      //     }
+      //     console.log(this.labelColor(d.labels[0]))
+      //     // return 'red'
+      //   })
+      //   .style('stroke', '#D1D1D1')
+      //   .style('stroke-width', 2)
+      //   .call(
+      //     d3.drag()
+      //       .on('start', this.start_drag)
+      //       .on('drag', this.drag_effect)
+      //       .on('end', this.end_drag)
+      //   )
+      // this.svg_texts = this.g.append('g')
+      //   .selectAll('text')
+      //   .data(this.nodes)
+      //   .enter()
+      //   .append('text')
+      //   .style('fill', 'black')
+      //   .attr('dx', 0)
+      //   .attr('dy', 7)
+      //   .style('font-family', 'Raleway')
+      //   .attr('pointer-events', 'none')
+      //   .attr('text-anchor', 'middle')
+      //   .text(function (d) {
+      //     return d.name
+      //   })
       this.sim.on('tick', this.ticked)
     },
     ticked () {
@@ -145,9 +180,9 @@ export default {
       this.svg_nodes
         .attr('cx', function (d) { return d.x })
         .attr('cy', function (d) { return d.y })
-      this.svg_texts
-        .attr('x', function (d) { return d.x })
-        .attr('y', function (d) { return d.y })
+      // this.svg_texts
+      //   .attr('x', function (d) { return d.x })
+      //   .attr('y', function (d) { return d.y })
     },
     zoom_actions () {
       this.g.attr('transform', d3.event.transform)
@@ -180,6 +215,11 @@ export default {
         case 'API Parameter': return '#454C63'
         case 'API Return Value': return '#B84569'
         case 'Exception': return '#7697C2'
+      }
+    },
+    expand (e) {
+      if (e.target.class === 'node') {
+
       }
     }
   },
