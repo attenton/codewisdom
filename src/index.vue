@@ -63,18 +63,17 @@
             <el-row type="flex" justify="center" >
                 <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="4" :pull="1">
                     <el-card class="tools_box">
-                        <i class="el-icon-view"></i>
-                        Graph
+                        Entity Link
                     </el-card>
                 </el-col>
                 <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="4" >
                     <el-card class="tools_box">
-                        Entity retrieval
+                        Domain Concept retrieval
                     </el-card>
                 </el-col>
                 <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="4" :push="1">
                     <el-card class="tools_box">
-                        API Summary
+                        Entity Recognition
                     </el-card>
                 </el-col>
             </el-row>

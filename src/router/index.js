@@ -6,6 +6,9 @@ import index from '../index'
 import KnowledgeData from '../KnowledgeData'
 import Search from '../Search'
 import SVGForceGraph from '../SVGForceGraph'
+import DomainConceptRetrieval from '../DomainConceptRetrieval'
+import EntityLink from '../EntityLink'
+import EntityRecognition from '../EntityRecognition'
 
 Vue.use(Router)
 
@@ -40,6 +43,21 @@ export default new Router({
       path: '/SVGForceGraph/:id',
       name: 'SVGForceGraph',
       component: SVGForceGraph
+    },
+    {
+      path: '/DomainConceptRetrieval',
+      name: 'DomainConceptRetrieval',
+      component: DomainConceptRetrieval
+    },
+    {
+      path: '/EntityLink',
+      name: 'EntityLink',
+      component: EntityLink
+    },
+    {
+      path: '/EntityRecognition',
+      name: 'EntityRecognition',
+      component: EntityRecognition
     }
   ]
 })

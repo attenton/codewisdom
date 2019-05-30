@@ -16,13 +16,13 @@ export default {
     return {
       select: '',
       input5: '',
-      loding: true
+      loading: true
     }
   },
   methods: {
     search () {
       alert(this.input5)
-      this.loding = true
+      this.loading = true
     },
     openInfo () {
       this.$notify.info({
