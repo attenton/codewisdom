@@ -1,11 +1,12 @@
 <template>
   <div id="SentenceFunction" class="container">
-    <div id="content">
+    <div id="content" ref="content">
+      <h1  id="title" style="text-align: center">Sentence Function Prediction</h1>
       <div id="input_frame">
-        <el-form :model="form" :rules="rules" ref="ruleForm">
+        <el-form :model="form" :rules="rules" ref="form" @submit.native.prevent>
           <el-form-item prop="sentence">
             <el-input placeholder="please input sentence for prediction" v-model="form.sentence" clearable @keyup.enter.native="predict('form')">
-              <el-button slot="append" icon="el-icon-search" @click="predict('form')"></el-button>
+              <el-button type="primary" slot="append" icon="el-icon-search" @click="predict('form')">Predict</el-button>
             </el-input>
           </el-form-item>
         </el-form>
@@ -44,8 +45,9 @@ export default {
   },
   methods: {
     predict (form) {
+      this.errorShow = false
       let _this = this
-      _this.$refs[form].validate((valid) => {
+      this.$refs[form].validate((valid) => {
         if (valid) {
           axios
             .post('http://10.141.221.89:8002/function/functionPredict/', {query: _this.form.sentence})
@@ -66,10 +68,12 @@ export default {
                   _this.type_text = 'Cannot Predidct exactlly'
                   break
               }
+              _this.$ref.content.style.transform()
               _this.preShow = true
             })
             .catch(error => {
-              _this.$message({
+              _this.$notify({
+                title: 'Error',
                 message: 'An error occurred on the server',
                 type: 'error'
               })
@@ -77,10 +81,12 @@ export default {
               console.log(error)
             })
         } else {
-          _this.$message({
+          _this.$notify({
+            title: 'Warning',
             message: 'Query cannot be empty',
             type: 'warning'
           })
+          return false
         }
       })
     }
@@ -92,9 +98,29 @@ export default {
 </script>
 
 <style scoped>
+  body{
+    background-color: #00a2ff!important;
+  }
   #SentenceFunction{
     font-family: "Raleway";
     padding: 0 auto;
+    margin: auto auto;
+  }
+  #content{
+    margin-top: 200px;
+  }
+  #title{
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 60px;
+    color: #5F6368;
+  }
+  .el-input:hover{
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
+  }
+  .el-input__inner:focus{
+    border: none!important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04) !important;
   }
   #input_frame{
     width: 600px;
