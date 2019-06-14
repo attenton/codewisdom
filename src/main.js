@@ -9,6 +9,10 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'element-ui/lib/theme-chalk/index.css'
+import { codemirror } from 'vue-codemirror'
+import 'codemirror/lib/codemirror.css'
+
+Vue.use(codemirror)
 
 Vue.use(ElementUI)
 Vue.use(BootstrapVue)
