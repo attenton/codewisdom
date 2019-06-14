@@ -9,7 +9,7 @@ import SVGForceGraph from '../SVGForceGraph'
 import DomainConceptRetrieval from '../DomainConceptRetrieval'
 import EntityLink from '../EntityLink'
 import EntityRecognition from '../EntityRecognition'
-import SentenceClassfication from '../SentenceClassfication'
+import SentenceClassification from '../SentenceClassification'
 
 Vue.use(Router)
 
@@ -61,9 +61,9 @@ export default new Router({
       component: EntityRecognition
     },
     {
-      path: '/SentenceClassfication',
-      name: 'SentenceClassfication',
-      component: SentenceClassfication
+      path: '/SentenceClassification',
+      name: 'SentenceClassification',
+      component: SentenceClassification
     }
   ]
 })

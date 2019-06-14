@@ -9,11 +9,13 @@
               <el-button type="primary" slot="append" icon="el-icon-search" @click="predict('form')">Predict</el-button>
             </el-input>
           </el-form-item>
+          <el-button type="primary" @click="example1">Example1</el-button>
+          <el-button type="success" @click="example2">Example2</el-button>
         </el-form>
       </div>
       <div id="prediction" v-show="preShow">
-        <span>{{form.sentence}}</span>
-        <span>Prediction: {{type_text}}</span>
+        <p><span>Sentence:</span><br>{{show_sentence}}</p>
+        <p id="prediction_content"><span>Prediction:</span>&nbsp;&nbsp;{{type_text}}</p>
       </div>
       <div id="error" v-show="errorShow">
         <span>An error occurred on the server</span>
@@ -27,7 +29,7 @@
 import axios from 'axios'
 
 export default {
-  name: 'SentenceClassfication',
+  name: 'SentenceClassification',
   data () {
     return {
       form: {
@@ -36,6 +38,7 @@ export default {
       type_text: '',
       preShow: false,
       errorShow: false,
+      show_sentence: null,
       rules: {
         sentence: [
           {required: true, message: 'Please input query', trigger: 'blur, change'}
@@ -44,6 +47,22 @@ export default {
     }
   },
   methods: {
+    example1 () {
+      axios
+        .get('http://10.141.221.89:8002/function/functionExample/')
+        .then(response => {
+          this.form.sentence = response.data[0].text
+        })
+        .catch(error => console.log(error))
+    },
+    example2 () {
+      axios
+        .get('http://10.141.221.89:8002/function/functionExample/')
+        .then(response => {
+          this.form.sentence = response.data[1].text
+        })
+        .catch(error => console.log(error))
+    },
     predict (form) {
       this.errorShow = false
       let _this = this
@@ -68,7 +87,8 @@ export default {
                   _this.type_text = 'Cannot Predidct exactlly'
                   break
               }
-              _this.$ref.content.style.transform()
+              _this.show_sentence = _this.form.sentence
+              // _this.$ref.content.style.transform()
               _this.preShow = true
             })
             .catch(error => {
@@ -121,6 +141,18 @@ export default {
   .el-input__inner:focus{
     border: none!important;
     box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04) !important;
+  }
+  #prediction{
+    margin: 40px auto 0 auto;
+    width: 600px;
+    padding: 20px 20px;
+    background-color: #909399;
+    color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+  }
+  #prediction_content{
+    margin-bottom: 0 !important;
   }
   #input_frame{
     width: 600px;

@@ -67,12 +67,12 @@
                     </el-card>
                 </el-col>
                 <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="4" >
-                    <router-link to=""><el-card class="tools_box">
+                    <router-link to="/DomainConceptRetrieval"><el-card class="tools_box">
                         Domain Concept retrieval
                     </el-card></router-link>
                 </el-col>
                 <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="4" :push="1">
-                    <router-link to="/SentenceClassfication"><el-card class="tools_box">
+                    <router-link to="/SentenceClassification"><el-card class="tools_box">
                         Sentence Function Prediction
                     </el-card></router-link>
                 </el-col>
