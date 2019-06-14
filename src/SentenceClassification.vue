@@ -88,8 +88,13 @@ export default {
                   break
               }
               _this.show_sentence = _this.form.sentence
-              // _this.$ref.content.style.transform()
-              _this.preShow = true
+              _this.$refs.content.style.marginTop = 0
+              // _this.$refs.content.style.transform = 'translate(0px, -200px)'
+              if (_this.preShow !== true) {
+                setTimeout(function () {
+                  _this.preShow = true
+                }, 1000)
+              }
             })
             .catch(error => {
               _this.$notify({
@@ -128,11 +133,13 @@ export default {
   }
   #content{
     margin-top: 200px;
+    margin-bottom: 40px;
+    transition: margin-top 1s;
   }
   #title{
     text-align: center;
     margin-top: 40px;
-    margin-bottom: 60px;
+    margin-bottom: 40px;
     color: #5F6368;
   }
   .el-input:hover{
