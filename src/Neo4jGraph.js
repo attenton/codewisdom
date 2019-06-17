@@ -1,5 +1,6 @@
 /* global d3, document */
 import $ from 'jquery'
+import d3 from 'd3'
 /* jshint latedef:nofunc */
 
 var time = null
