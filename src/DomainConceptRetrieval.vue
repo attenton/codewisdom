@@ -20,6 +20,7 @@
 import GraphData from './forceGraph'
 import axios from 'axios'
 import {codemirror, CodeMirror} from 'vue-codemirror'
+import * as d3 from 'd3'
 // language js
 import 'codemirror/mode/javascript/javascript.js'
 // theme css

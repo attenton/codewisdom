@@ -10,6 +10,7 @@ import DomainConceptRetrieval from '../DomainConceptRetrieval'
 import EntityLink from '../EntityLink'
 import EntityRecognition from '../EntityRecognition'
 import SentenceClassification from '../SentenceClassification'
+import ElementGraph from '../showElementsGraph'
 
 Vue.use(Router)
 
@@ -64,6 +65,11 @@ export default new Router({
       path: '/SentenceClassification',
       name: 'SentenceClassification',
       component: SentenceClassification
+    },
+    {
+      path: '/ElementGraph/:id',
+      name: 'ElementGraph',
+      component: ElementGraph
     }
   ]
 })

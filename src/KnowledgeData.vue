@@ -143,7 +143,7 @@ export default {
       document.querySelector(idName).scrollIntoView(true)
     },
     GoGraph () {
-      this.$router.push({name: 'SVGForceGraph', params: { id: this.id }})
+      this.$router.push({name: 'ElementGraph', params: { id: this.id }})
     },
     show_more_relation () {
       this.relation_show = (this.relation_show === this.relation_name.length) ? 5 : this.relation_name.length

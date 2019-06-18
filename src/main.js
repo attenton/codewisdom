@@ -11,9 +11,10 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import { codemirror } from 'vue-codemirror'
 import 'codemirror/lib/codemirror.css'
+import * as d3 from 'd3'
 
 Vue.use(codemirror)
-
+Vue.use(d3)
 Vue.use(ElementUI)
 Vue.use(BootstrapVue)
 Vue.use(VueRouter)
