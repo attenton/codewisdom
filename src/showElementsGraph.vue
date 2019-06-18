@@ -17,39 +17,8 @@ export default {
       edges: [],
       id: null,
       startData: {
-        'nodes': [
-          {
-            'id': '1',
-            'labels': ['User'],
-            'properties': {
-              'userId': 'eisman'
-            }
-          },
-          {
-            'id': '8',
-            'labels': ['Project'],
-            'properties': {
-              'name': 'neo4jd3',
-              'title': 'neo4jd3.js',
-              'description': 'Neo4j graph visualization using D3.js.',
-              'url': 'https://eisman.github.io/neo4jd3'
-            }
-          }
-        ],
-        'relationships': [
-          {
-            'id': '7',
-            'type': 'DEVELOPES',
-            'startNode': '1',
-            'endNode': '8',
-            'properties': {
-              'from': 1470002400000
-            },
-            'source': '1',
-            'target': '8',
-            'linknum': 1
-          }
-        ]
+        'nodes': [],
+        'relationships': []
       }
     }
   },
@@ -57,35 +26,40 @@ export default {
     init () {
       this.neo4jd3 = new Neo4jD3('#neo4jd3', {
         neo4jData: this.startData,
-        icons: {},
-        images: {},
+        icons: {
+        },
+        images: {
+        },
         minCollision: 60,
         nodeRadius: 25,
+        onNodeDoubleClick: function (node) {
+          this.get_expand_node(node.id)
+        },
         onRelationshipDoubleClick: function (relationship) {
           console.log('double click on relationship: ' + JSON.stringify(relationship))
         },
         zoomFit: true
       })
     },
-    dataUpdate (dataNode) {
-      this.neo4jd3.updateWithD3Data(this.nodeData)
-    },
-    data2D3Data (data) {
-      let oriTerms = data['terms']
-      let oriRelations = data['relations']
-      let nodes = []
-      let relations = []
-      oriTerms.forEach(function (term, index) {
-        nodes.push({'id': index, 'labels': [term]})
-      })
-      oriRelations.forEach(function (relation, index) {
-        relations.push({'id': index, 'type': relation[1], 'startNode': relation[0], 'endNode': relation[2], 'linknum': 1})
-      })
-      return {
-        'nodes': nodes,
-        'relationships': relations
-      }
-    },
+    // dataUpdate (dataNode) {
+    //   this.neo4jd3.updateWithD3Data(this.nodeData)
+    // },
+    // data2D3Data (data) {
+    //   let oriTerms = data['terms']
+    //   let oriRelations = data['relations']
+    //   let nodes = []
+    //   let relations = []
+    //   oriTerms.forEach(function (term, index) {
+    //     nodes.push({'id': index, 'labels': [term]})
+    //   })
+    //   oriRelations.forEach(function (relation, index) {
+    //     relations.push({'id': index, 'type': relation[1], 'startNode': relation[0], 'endNode': relation[2], 'linknum': 1})
+    //   })
+    //   return {
+    //     'nodes': nodes,
+    //     'relationships': relations
+    //   }
+    // },
     // eslint-disable-next-line no-undef
     get_expand_node (id) {
       axios
@@ -94,30 +68,33 @@ export default {
           console.log(response)
           response.data.relations.forEach((relation) => {
             let edge = {}
+            edge.end_id = relation.end_id
+            edge.start_id = relation.start_id
             edge.target = relation.end_id
             edge.source = relation.start_id
             edge.id = relation.id
-            edge.name = relation.name
+            edge.type = relation.name
+            edge.properties = {}
             this.$set(this.edges, this.edges.length, edge)
           })
           response.data.nodes.forEach((relatedNode) => {
-            let node = {}
-            node.id = relatedNode.id
-            node.name = relatedNode.name
-            node.labels = relatedNode.labels
-            this.$set(this.nodes, this.nodes.length, node)
+            // let node = relatedNode.nodes
+            this.$set(this.nodes, this.nodes.length, relatedNode)
           })
+          // this.neo4jd3.cleanGraph()
           console.log('nodes')
           console.log(this.nodes)
           console.log('edges')
           console.log(this.edges)
-          this.neo4jd3.updateWithD3Data({'nodes': this.nodes, 'relationships': this.edges})
+          this.startData = {'nodes': this.nodes, 'relationships': this.edges}
+          this.init()
+          // this.neo4jd3.updateWithD3Data({'nodes': this.nodes, 'relationships': this.edges})
         })
         .catch(error => console.log(error))
     }
   },
   mounted () {
-    this.init()
+    // this.init()
     this.get_expand_node(this.id)
   },
   created () {
@@ -132,5 +109,122 @@ export default {
 </script>
 
 <style scoped>
+#neo4jd3{
+  height: 100%;
+}
+.neo4jd3 {
+  height: 100% !important;
+  overflow: hidden;
+}
+* {
+  margin: 0px;
+  padding: 0px;
+}
 
+body {
+  font: 13px 'Helvetica Neue',Helvetica,Arial,sans-serif;
+  font-size: 20px;
+}
+
+.neo4jd3-graph {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.neo4jd3-info {
+  font-size: 16px;
+  padding: 10px;
+  position: absolute;
+}
+.neo4jd3-info a {
+  border: 1px solid;
+  display: inline-block;
+  font-size: 14px;
+  line-height: 1.428571429;
+  margin-left: 5px;
+  margin-top: 5px;
+  padding: 6px 12px;
+}
+.neo4jd3-info a.class {
+  color: white;
+}
+.neo4jd3-info a.property {
+  background-color: #fff;
+  border-color: #ccc;
+  color: #333;
+}
+.neo4jd3-info a.btn {
+  margin-left: 5px;
+  margin-top: 5px;
+  opacity: 1;
+}
+.neo4jd3-info a.info {
+  background-color: #a5abb6;
+  border: 1px solid #9aa1ac;
+  color: white;
+}
+
+.node.node-highlighted .ring {
+  -ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=50)';
+  filter: alpha(opacity=50);
+  opacity: .5;
+  stroke: #888;
+  stroke-width: 12px;
+}
+.node .outline {
+  cursor: pointer;
+  fill: #a5abb6;
+  pointer-events: all;
+  stroke: #9aa1ac;
+  stroke-width: 2px;
+}
+.node .ring {
+  fill: none;
+  -ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=0)';
+  filter: alpha(opacity=0);
+  opacity: 0;
+  stroke: #6ac6ff;
+  stroke-width: 8px;
+}
+.node .text.icon {
+  font-family: FontAwesome;
+}
+
+.node.selected .ring,
+.node:hover .ring {
+  -ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=30)';
+  filter: alpha(opacity=30);
+  opacity: .3;
+}
+
+.relationship {
+  cursor: default;
+}
+.relationship line {
+  stroke: #aaa;
+}
+.relationship .outline {
+  cursor: default;
+}
+.relationship .overlay {
+  cursor: default;
+  fill: #6ac6ff;
+  -ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=0)';
+  filter: alpha(opacity=0);
+  opacity: 0;
+}
+.relationship text {
+  cursor: default;
+}
+
+.relationship.selected .overlay,
+.relationship:hover .overlay {
+  -ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=30)';
+  filter: alpha(opacity=30);
+  opacity: .3;
+}
+
+svg {
+  cursor: move;
+}
 </style>

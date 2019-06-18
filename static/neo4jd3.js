@@ -1,9 +1,6 @@
-// eslint-disable-next-line no-unused-vars
 import * as d3 from 'd3'
-/* jshint latedef:nofunc */
-// eslint-disable-next-line no-unused-expressions
 
-function Neo4jD3 (_selector, _options) {
+export default function Neo4jD3 (_selector, _options) {
   // eslint-disable-next-line one-var,no-unused-vars
   var container, graph, info, node, nodes, relationship, relationshipOutline, relationshipOverlay, relationshipText, relationships, selector, simulation, svg, svgNodes, svgRelationships, svgScale, svgTranslate,
     classes2colors = {},
@@ -59,6 +56,12 @@ function Neo4jD3 (_selector, _options) {
 
     svgNodes = svg.append('g')
       .attr('class', 'nodes')
+  }
+
+  function cleanGraph () {
+    nodes = []
+    relationships = []
+    updateGraph()
   }
 
   function appendImageToNode (node) {
@@ -501,13 +504,18 @@ function Neo4jD3 (_selector, _options) {
 
     simulation = initSimulation()
 
-    if (options.neo4jData) {
-      loadNeo4jData(options.neo4jData)
-    } else if (options.neo4jDataUrl) {
-      loadNeo4jDataFromUrl(options.neo4jDataUrl)
+    if (options.D3Data) {
+      updateWithD3Data(options.D3Data)
     } else {
-      console.error('Error: both neo4jData and neo4jDataUrl are empty!')
+      console.error('initial D3Data from config is empty!')
     }
+    // if (options.neo4jData) {
+    //   loadNeo4jData(options.neo4jData)
+    // } else if (options.neo4jDataUrl) {
+    //   loadNeo4jDataFromUrl(options.neo4jDataUrl)
+    // } else {
+    //   console.error('Error: both neo4jData and neo4jDataUrl are empty!')
+    // }
   }
 
   function initIconMap () {
@@ -983,5 +991,3 @@ function Neo4jD3 (_selector, _options) {
     version: version
   }
 }
-
-module.exports = Neo4jD3
