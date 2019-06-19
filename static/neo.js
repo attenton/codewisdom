@@ -1,4 +1,5 @@
 import * as d3 from 'd3'
+import $ from 'jquery'
 
 export default function Neo4jD3 (_selector, _options) {
   // eslint-disable-next-line one-var,no-unused-vars
@@ -11,7 +12,7 @@ export default function Neo4jD3 (_selector, _options) {
     options = {
       arrowSize: 4,
       highlight: undefined,
-      infoPanel: true,
+      infoPanel: false,
       infoSelector: true,
       minCollision: 50,
       D3Data: undefined,
@@ -739,7 +740,7 @@ export default function Neo4jD3 (_selector, _options) {
         if (d.target === d.source) {
           // dr = 30/d.linknum;
           // return"M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 1,1 " + d.target.x + "," + (d.target.y+1);
-        } else if (d.size % 2 != 0 && d.linknum === 1) { // 如果两个节点之间的连接线数量为奇数条，则设置编号为1的连接线为直线，其他连接线会均分在两边
+        } else if (d.size % 2 !== 0 && d.linknum === 1) { // 如果两个节点之间的连接线数量为奇数条，则设置编号为1的连接线为直线，其他连接线会均分在两边
           return 'M ' + rotatedPointA1.x + ' ' + rotatedPointA1.y +
                         ' L ' + rotatedPointB1.x + ' ' + rotatedPointB1.y +
                         ' L ' + rotatedPointC1.x + ' ' + rotatedPointC1.y +
@@ -757,9 +758,12 @@ export default function Neo4jD3 (_selector, _options) {
         // eslint-disable-next-line one-var
         var dx1 = rotatedPointB2.x - rotatedPointA1.x,
           dy1 = rotatedPointB2.y - rotatedPointA1.y,
+          // eslint-disable-next-line no-unused-vars
           dr1 = Math.sqrt(dx1 * dx1 + dy1 * dy1) * (d.linknum + 1.2) / (1.5 * 1.2)
+        // eslint-disable-next-line one-var
         var dx2 = rotatedPointD1.x - rotatedPointF2.x,
           dy2 = rotatedPointD1.y - rotatedPointF2.y,
+          // eslint-disable-next-line no-unused-vars
           dr2 = (Math.sqrt(dx2 * dx2 + dy2 * dy2) * (d.linknum + 1.2) / (1.5 * 1.2))
         // console.log(dr1+" "+dr2)
         // console.log(dr1+"  "+dr2)
@@ -814,6 +818,7 @@ export default function Neo4jD3 (_selector, _options) {
 
   function tickRelationshipsOverlays () {
     relationshipOverlay.attr('d', function (d) {
+      // eslint-disable-next-line one-var
       let center = {x: 0, y: 0},
         angle = rotation(d.source, d.target),
         n1 = unitaryNormalVector(d.source, d.target),
@@ -840,6 +845,7 @@ export default function Neo4jD3 (_selector, _options) {
   function tickRelationshipsTexts () {
     relationshipText.attr('transform', function (d) {
       // console.log(d);
+      // eslint-disable-next-line one-var
       let angle = rotation(d.source, d.target),
         angle2 = (rotation(d.source, d.target) + 360) % 360,
         mirror = angle2 > 90 && angle2 < 270,
@@ -917,6 +923,7 @@ export default function Neo4jD3 (_selector, _options) {
   }
 
   function unitaryNormalVector (source, target, newLength) {
+    // eslint-disable-next-line one-var
     let center = {x: 0, y: 0},
       vector = unitaryVector(source, target, newLength)
 
@@ -1034,8 +1041,10 @@ export default function Neo4jD3 (_selector, _options) {
 
   function updateNodes (n) {
     n = fillLabelsForNodes(n)
+    // eslint-disable-next-line camelcase
     for (let new_node of n) {
       let exist = false
+      // eslint-disable-next-line camelcase
       for (let exist_node of nodes) {
         if (new_node.id === exist_node.id) {
           exist = true

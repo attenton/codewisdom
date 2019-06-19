@@ -33,6 +33,8 @@ export default {
     font-family: "Raleway", Helvetica, Arial, sans-serif;
     -webkit-font-feature-settings: "lunm";
     font-feature-settings: "lunm";
+    height: 100%;
+    width: 100%;
     /*background-color: rgba(245,245,245,0.8);*/
     word-wrap:break-word;
 }

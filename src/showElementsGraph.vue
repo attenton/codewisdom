@@ -1,5 +1,5 @@
 <template>
-    <div id='neo4jd3'>
+    <div id='neo4jd3' v-loading="loading">
     </div>
 </template>
 
@@ -11,19 +11,33 @@ export default {
   name: 'showElementsGraph',
   data () {
     return {
+      loading: true,
       nodeData: {},
       neo4jd3: null,
       nodes: [],
       edges: [],
       id: null,
       startData: {
-        'nodes': [],
-        'relationships': []
+        'results': [
+          {
+            'columns': ['user', 'entity'],
+            'data': [
+              {
+                'graph': {
+                  'nodes': [],
+                  'relationships': []
+                }
+              }
+            ]
+          }
+        ],
+        'error': []
       }
     }
   },
   methods: {
     init () {
+      let _this = this
       this.neo4jd3 = new Neo4jD3('#neo4jd3', {
         neo4jData: this.startData,
         icons: {
@@ -33,7 +47,7 @@ export default {
         minCollision: 60,
         nodeRadius: 25,
         onNodeDoubleClick: function (node) {
-          this.get_expand_node(node.id)
+          _this.get_expand_node(node.id)
         },
         onRelationshipDoubleClick: function (relationship) {
           console.log('double click on relationship: ' + JSON.stringify(relationship))
@@ -86,15 +100,21 @@ export default {
           console.log(this.nodes)
           console.log('edges')
           console.log(this.edges)
-          this.startData = {'nodes': this.nodes, 'relationships': this.edges}
-          this.init()
+          let data = []
+          let graph = {'graph': {'nodes': this.nodes, 'relationships': this.edges}}
+          data.push(graph)
+          let results = []
+          results.push({'data': data})
+          this.startData.results = results
+          this.neo4jd3.updateWithNeo4jData(this.startData)
+          this.loading = false
           // this.neo4jd3.updateWithD3Data({'nodes': this.nodes, 'relationships': this.edges})
         })
         .catch(error => console.log(error))
     }
   },
   mounted () {
-    // this.init()
+    this.init()
     this.get_expand_node(this.id)
   },
   created () {
@@ -110,10 +130,10 @@ export default {
 
 <style scoped>
 #neo4jd3{
-  height: 100%;
+  height: 500px;
 }
 .neo4jd3 {
-  height: 100% !important;
+  height: 500px;
   overflow: hidden;
 }
 * {
