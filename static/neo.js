@@ -1133,7 +1133,7 @@ export default function Neo4jD3 (_selector, _options) {
         if (type == 'self') {
           maxLinkNumber = group.length
         } else {
-          maxLinkNumber = group.length % 2 == 0 ? group.length / 2 : (group.length + 1) / 2
+          maxLinkNumber = group.length % 2 === 0 ? group.length / 2 : (group.length + 1) / 2
         }
         // 如果两个方向的关系数量一样多，直接分别设置编号即可
         if (linksA.length === linksB.length) {

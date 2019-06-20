@@ -10,7 +10,7 @@
                 You can explore interested API knowledge by searching and graph-based navigating.
                 You can also get what you want to know by asking questions.
                 The current version supports JDK and Android APIs.</h2>
-            <el-button class="dis" type="primary" plain @click="discover">Discover</el-button>
+            <el-button class="dis" type="primary" plain style="cursor: not-allowed">Discover</el-button>
         </div>
     </div>
 
@@ -62,18 +62,18 @@
             </div>
             <el-row type="flex" justify="center" >
                 <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="4" :pull="1">
-                    <el-card class="tools_box">
+                    <el-card id="entity_link">
                         Entity Link
                     </el-card>
                 </el-col>
                 <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="4" >
-                    <router-link to="/DomainConceptRetrieval"><el-card class="tools_box">
-                        Domain Concept retrieval
+                    <router-link to="/ConceptGraphExtraction"><el-card class="tools_box">
+                        Concept Graph Extraction
                     </el-card></router-link>
                 </el-col>
                 <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="4" :push="1">
-                    <router-link to="/SentenceClassification"><el-card class="tools_box">
-                        Sentence Function Prediction
+                    <router-link to="/KnowledgePatternPrediction"><el-card class="tools_box">
+                        Knowledge Pattern Prediction
                     </el-card></router-link>
                 </el-col>
             </el-row>
@@ -103,15 +103,15 @@ export default {
   },
   mounted () {
     axios
-      .post('http://bigcode.fudan.edu.cn/kg-debug/GetPopularNodes/', {top_number: this.top_number})
+      .post('http://bigcode.fudan.edu.cn/kg/api/graph/getPopularNodes/', {top_number: this.top_number})
       .then(response => { (this.popular_data = response.data.nodes) })
       .catch(error => console.log(error))
     axios
-      .post('http://bigcode.fudan.edu.cn/kg-debug/GetNewNodes/', {top_number: this.top_number})
+      .post('http://bigcode.fudan.edu.cn/kg/api/graph/getNewNodes/', {top_number: this.top_number})
       .then(response => { (this.recent_data = response.data.nodes) })
       .catch(error => console.log(error))
     axios
-      .post('http://bigcode.fudan.edu.cn/kg-debug/GetKnowledgeGraphMetaData/')
+      .post('http://bigcode.fudan.edu.cn/kg/api/graph/getKnowledgeGraphMetaData/')
       .then(response => { (this.statistics_data = response.data) })
       .catch(error => console.log(error))
   }
@@ -158,19 +158,19 @@ export default {
     border-color: rgba(255,255,255,0.5);
     background: rgba(64,158,255,0) !important;
 }
-.el-button--primary.is-plain:hover{
-    /*border-color: rgba(255,255,255,0.8) !important;*/
-    background: #1e88e5 !important;
-    border-color: #1e88e5;
-}
-.el-button--primary.is-plain:focus{
-    background: #1e88e5 !important;
-    border-color: #1e88e5;
-}
-.dis:hover{
-  transition:all .5s;
-  transform: translateY(-5px);
-}
+/*.el-button--primary.is-plain:hover{*/
+/*    !*border-color: rgba(255,255,255,0.8) !important;*!*/
+/*    background: #1e88e5 !important;*/
+/*    border-color: #1e88e5;*/
+/*}*/
+/*.el-button--primary.is-plain:focus{*/
+/*    background: #1e88e5 !important;*/
+/*    border-color: #1e88e5;*/
+/*}*/
+/*.dis:hover{*/
+/*  transition:all .5s;*/
+/*  transform: translateY(-5px);*/
+/*}*/
 
 #Statistics{
     width: 100%;
@@ -200,6 +200,18 @@ export default {
 .el-card__body{
     font-weight: bold;
     text-align: center;
+}
+.inner > a > .el-card > .el-card__body{
+  overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    -ms-text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+}
+#Statistics > div > div.el-col.el-col-24.el-col-pull-1.el-col-xs-6.el-col-sm-6.el-col-md-6.el-col-lg-6.el-col-xl-4 > div > div > div:nth-child(6) > a > div > div{
+  overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    -ms-text-overflow: ellipsis !important;
+    white-space: nowrap !important;
 }
 .transition-box{
     height: 480px;
@@ -247,6 +259,19 @@ a:hover{
     min-height: 150px;
 }
 .tools_box:hover{
-
+  border: none;
+  color: #fff;
+  background-color: #1e88e5;
+  transition:all .5s;
+  transform: translateY(-5px);
+  /*box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)*/
+}
+#entity_link{
+  text-align: center;
+  line-height: 150px;
+  min-height: 150px;
+  cursor: not-allowed;
+  background-color: #f5f7fa;
+  border-color: #e4e7ed;
 }
 </style>

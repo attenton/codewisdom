@@ -8,9 +8,21 @@
         </div>
         <el-button id="extract" type="success" @click="extract">Extract Entity</el-button>
       </div>
-      <div id="Entity">
-        <h2>Relations</h2>
-        <el-table :data="relations"></el-table>
+      <div id="Entity" v-show="show">
+        <h5>Nodes</h5>
+        <div id="nodes">
+          <span>{{terms}}</span>
+        </div>
+        <h5>Relations</h5>
+        <div id="relations">
+          <span>{{relations}}</span>
+        </div>
+        <div>
+          <h5 v-show="nodes.length > 0">Graph</h5>
+          <div id='graph' class="x" v-show="nodes.length > 0">
+            <canvas ref="canvas"></canvas>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -37,15 +49,25 @@ export default {
       cmOptions: {
         // codemirror options
         tabSize: 4,
-        mode: 'text/javascript',
+        mode: 'text/plain',
         theme: 'paraiso-light',
         lineNumbers: true,
         line: true,
         lineWrapping: true
         // more codemirror options, 更多 codemirror 的高级配置...
       },
-      terms: null,
-      relations: null
+      edges: [],
+      nodes: [],
+      relations: 'None',
+      terms: 'None',
+      graph: null,
+      width: null,
+      height: null,
+      strength: -60,
+      link_distance: 90,
+      e: null,
+      getIterator: -1,
+      show: false
     }
   },
   methods: {
@@ -60,19 +82,61 @@ export default {
       this.text = newCode
     },
     extract () {
+      let _this = this
+      _this.show = true
+      this.nodes.length = 0
+      this.edges.length = 0
+      this.terms = 'None'
+      this.relations = 'None'
+      console.log(this.text)
       axios
-        .post('http://127.0.0.1:5000/extractTextEntity/', {text: this.text})
+        .post('http://bigcode.fudan.edu.cn/kg/api/entityRetrieval/extractTextEntity/', {text: this.text})
         .then(response => {
-          this.terms = response.data.terms
-          this.relations = response.data.relations
+          if (response.data.terms.length > 0) {
+            _this.terms = ''
+            response.data.terms.forEach(function (d, index) {
+              _this.terms += '"' + d + '", '
+              let node = {}
+              node.id = index + 1
+              node.name = d
+              _this.$set(_this.nodes, _this.nodes.length, node)
+            })
+          }
+          if (response.data.relations.length > 0) {
+            _this.relations = ''
+            response.data.relations.forEach(function (d, index) {
+              let edge = {}
+              edge.id = index + 1
+              edge.name = d[1]
+              let flag = false
+              _this.nodes.forEach(function (node, index) {
+                if (d[2] === node.name) {
+                  edge.target = node.id
+                  flag = true
+                }
+                if (d[0] === node.name) {
+                  edge.source = node.id
+                }
+              })
+              // edge.target = _this.nodes.findIndex(d[2])
+              // edge.source = _this.nodes.findIndex(d[0])
+              if (flag === true) {
+                _this.relations += '(' + d[0] + ', ' + d[1] + ', ' + d[2] + '), '
+                _this.$set(_this.edges, _this.edges.length, edge)
+              }
+            })
+          }
+          console.log(this.nodes)
+          console.log(this.edges)
           console.log(response)
+          this.force_graph_init()
         })
         .catch(error => console.log(error))
     },
     force_graph_init () {
       var canvas = document.querySelector('canvas')
-      canvas.width = document.querySelector('#graph').offsetWidth
-      canvas.height = canvas.width / 1.5
+      canvas.width = document.querySelector('#Entity').offsetWidth
+      canvas.height = canvas.width / 1.8
       this.e = canvas.getContext('2d')
       this.width = canvas.width
       this.height = canvas.height
@@ -148,6 +212,7 @@ export default {
     },
     run () {
       this.graph.restart()
+      this.show_graph = true
     },
     restart () {
       this.graph.alpha(1)
@@ -180,6 +245,28 @@ export default {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   /*height: 300px;*/
+}
+#nodes{
+  margin: 20px auto;
+  background-color: #409EFF;
+  color: white;
+  border-radius: 5px;
+  padding: 20px 20px;
+}
+#relations{
+  margin: 20px auto;
+  padding: 20px 20px;
+  background-color: #909399;
+  color: white;
+  border-radius: 5px;
+}
+#graph{
+  margin: 20px auto 20px auto;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+#Entity{
+  width: 600px;
+  margin: 20px auto;
 }
 #extract{
   margin-top: 20px;

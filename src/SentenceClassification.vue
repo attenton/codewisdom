@@ -49,7 +49,7 @@ export default {
   methods: {
     example1 () {
       axios
-        .get('http://10.141.221.89:8002/function/functionExample/')
+        .get('http://bigcode.fudan.edu.cn/kg/api/function/functionExample/')
         .then(response => {
           this.form.sentence = response.data[0].text
         })
@@ -57,7 +57,7 @@ export default {
     },
     example2 () {
       axios
-        .get('http://10.141.221.89:8002/function/functionExample/')
+        .get('http://bigcode.fudan.edu.cn/kg/api/function/functionExample/')
         .then(response => {
           this.form.sentence = response.data[1].text
         })
@@ -69,7 +69,7 @@ export default {
       this.$refs[form].validate((valid) => {
         if (valid) {
           axios
-            .post('http://10.141.221.89:8002/function/functionPredict/', {query: _this.form.sentence})
+            .post('http://bigcode.fudan.edu.cn/kg/api/function/functionPredict/', {query: _this.form.sentence})
             .then(response => {
               console.log(response)
               let type = response.data.type

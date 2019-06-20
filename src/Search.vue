@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="search">
       <div id="search-box" style="margin: 100px 20%;">
         <el-input  placeholder="Input Entity for Searching" v-model="input5" @keyup.enter.native="search">
           <el-button type="info" icon="el-icon-info" slot="prepend" @click="openInfo" ></el-button>
@@ -16,7 +16,8 @@ export default {
     return {
       select: '',
       input5: '',
-      loading: true
+      loading: true,
+
     }
   },
   methods: {

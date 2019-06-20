@@ -1,5 +1,5 @@
 <template>
-    <div id='graph_canvas' class="x">
+    <div id='graph_canvas' class="x" v-loading="loading">
       <canvas ref="canvas"></canvas>
     </div>
 </template>
@@ -26,7 +26,8 @@ export default {
       strength: -60,
       link_distance: 90,
       e: null,
-      getIterator: -1
+      getIterator: -1,
+      loading: true
     }
   },
   methods: {
@@ -35,7 +36,7 @@ export default {
     // },
     getNodeRelation (id) {
       axios
-        .post('http://bigcode.fudan.edu.cn/kg-debug/expandNode/', {id: id})
+        .post('http://bigcode.fudan.edu.cn/kg/api/graph/expandNode/', {id: id})
         .then(response => {
           console.log(response)
           response.data.relations.forEach((relation) => {
@@ -77,6 +78,7 @@ export default {
       this.graph.force('link').links(this.edges)
       this.initDrag()
       this.restart()
+      this.loading = false
     },
     // create canvas
     render () {

@@ -47,7 +47,7 @@ export default new Router({
       component: SVGForceGraph
     },
     {
-      path: '/DomainConceptRetrieval',
+      path: '/ConceptGraphExtraction',
       name: 'DomainConceptRetrieval',
       component: DomainConceptRetrieval
     },
@@ -62,7 +62,7 @@ export default new Router({
       component: EntityRecognition
     },
     {
-      path: '/SentenceClassification',
+      path: '/KnowledgePatternPrediction',
       name: 'SentenceClassification',
       component: SentenceClassification
     },
