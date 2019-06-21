@@ -62,7 +62,7 @@
             </div>
             <el-row type="flex" justify="center" >
                 <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="4" :pull="1">
-                    <el-card id="entity_link">
+                    <el-card id="entity_link" title="to be continued">
                         Entity Link
                     </el-card>
                 </el-col>

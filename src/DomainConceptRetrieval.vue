@@ -1,7 +1,14 @@
 <template>
   <div id="DCR">
     <div id="content">
-      <h1 id="title" style="text-align: center">Domain Concept Retrieval</h1>
+      <h1 id="title" style="text-align: center">Concept Graph Extraction</h1>
+      <div id="radio_g">
+        <el-radio-group v-model="radio">
+          <el-radio-button label="Plain Text"></el-radio-button>
+          <el-radio-button label="Java Code"></el-radio-button>
+          <el-radio-button label="Html Code"></el-radio-button>
+        </el-radio-group>
+      </div>
       <div id="input_frame">
         <div class="codemirror">
           <codemirror ref="myCm" v-model="text" :options="cmOptions"></codemirror>
@@ -34,8 +41,16 @@ import axios from 'axios'
 import {codemirror, CodeMirror} from 'vue-codemirror'
 import * as d3 from 'd3'
 // language js
+import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/javascript/javascript.js'
+import 'codemirror/mode/xml/xml.js'
+import 'codemirror/mode/htmlmixed/htmlmixed.js'
+import 'codemirror/mode/clike/clike.js'
+import 'codemirror/addon/edit/closetag.js'
+
+// import 'codemirror/mode/java/java.js'
 // theme css
+
 import 'codemirror/theme/base16-dark.css'
 import 'codemirror/theme/paraiso-light.css'
 
@@ -45,15 +60,17 @@ export default {
   data () {
     // const text = `const bbb = 222;\nconst ccc = 111;\neee fff ggg`
     return {
+      radio: 'Plain Text',
       text: '',
       cmOptions: {
         // codemirror options
         tabSize: 4,
-        mode: 'text/plain',
+        mode: 'text/html',
         theme: 'paraiso-light',
         lineNumbers: true,
         line: true,
-        lineWrapping: true
+        lineWrapping: true,
+        autoCloseTags: true
         // more codemirror options, 更多 codemirror 的高级配置...
       },
       edges: [],
@@ -90,7 +107,7 @@ export default {
       this.relations = 'None'
       console.log(this.text)
       axios
-        .post('http://bigcode.fudan.edu.cn/kg/api/entityRetrieval/extractTextEntity/', {text: this.text})
+        .post('http://127.0.0.1:5000/extractTextEntity/', {text: this.text, flag: this.radio})
         .then(response => {
           if (response.data.terms.length > 0) {
             _this.terms = ''
@@ -224,6 +241,15 @@ export default {
       return this.$refs.myCm.codemirror
     }
   },
+  watch: {
+    radio (val) {
+      console.log(val)
+      if (val === 'Plain Text') this.cmOptions.mode = 'text/plain'
+      else if (val === 'Java Code') this.cmOptions.mode = 'text/x-java'
+      else if (val === 'Html Code') this.cmOptions.mode = 'text/html'
+      console.log(this.cmOptions.mode)
+    }
+  },
   mounted () {
   }
 }
@@ -270,5 +296,9 @@ export default {
 }
 #extract{
   margin-top: 20px;
+}
+#radio_g{
+  margin: 10px auto;
+  width: 600px;
 }
 </style>

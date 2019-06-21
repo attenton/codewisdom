@@ -1,7 +1,7 @@
 <template>
   <div id="SentenceFunction" class="container">
     <div id="content" ref="content">
-      <h1  id="title" style="text-align: center">Sentence Function Prediction</h1>
+      <h1  id="title" style="text-align: center">Knowledge Pattern Prediction</h1>
       <div id="input_frame">
         <el-form :model="form" :rules="rules" ref="form" @submit.native.prevent>
           <el-form-item prop="sentence">
@@ -11,11 +11,32 @@
           </el-form-item>
           <el-button type="primary" @click="example1">Example1</el-button>
           <el-button type="success" @click="example2">Example2</el-button>
+          <el-button type="warning" @click="example3">Example3</el-button>
         </el-form>
       </div>
+      <h4 v-show="preShow">Prediction</h4>
       <div id="prediction" v-show="preShow">
         <p><span>Sentence:</span><br>{{show_sentence}}</p>
-        <p id="prediction_content"><span>Prediction:</span>&nbsp;&nbsp;{{type_text}}</p>
+        <p class="p_content"><span>Prediction:</span>&nbsp;&nbsp;{{type_text}}</p>
+      </div>
+      <h4 v-show="preShow">Introduction</h4>
+      <div id="introduction" v-show="preShow">
+        <p class="intro_name">[Functionality]</p>
+        <p>—
+          description of the functionality of API
+          entities. Example: “Object used to report key and button events”.
+        </p>
+        <p class="intro_name">[Directive]</p>
+        <p>—
+          description about the usage of the API such as, correct or
+          incorrect usage situations, constraints on method parameters, situations
+          of exception throwing. Example: “IllegalArgumentException:
+          if the modifiers parameter contains invalid modifiers”.
+        </p>
+        <p class="intro_name">[Other]</p>
+        <p class="p_content ">—
+          all other situations, usually implementation details.
+        </p>
       </div>
       <div id="error" v-show="errorShow">
         <span>An error occurred on the server</span>
@@ -48,20 +69,25 @@ export default {
   },
   methods: {
     example1 () {
-      axios
-        .get('http://bigcode.fudan.edu.cn/kg/api/function/functionExample/')
-        .then(response => {
-          this.form.sentence = response.data[0].text
-        })
-        .catch(error => console.log(error))
+      this.form.sentence = 'Appends the specified StringBuffer to this sequence.'
+      // axios
+      //   .get('http://bigcode.fudan.edu.cn/kg/api/function/functionExample/')
+      //   .then(response => {
+      //     this.form.sentence = response.data[0].text
+      //   })
+      //   .catch(error => console.log(error))
     },
     example2 () {
-      axios
-        .get('http://bigcode.fudan.edu.cn/kg/api/function/functionExample/')
-        .then(response => {
-          this.form.sentence = response.data[1].text
-        })
-        .catch(error => console.log(error))
+      this.form.sentence = 'For details, see Threads and Swing, a section in The Java Tutorial.'
+      // axios
+      //   .get('http://bigcode.fudan.edu.cn/kg/api/function/functionExample/')
+      //   .then(response => {
+      //     this.form.sentence = response.data[1].text
+      //   })
+      //   .catch(error => console.log(error))
+    },
+    example3 () {
+      this.form.sentence = 'For details, see Threads and Swing, a section in The Java Tutorial.'
     },
     predict (form) {
       this.errorShow = false
@@ -75,7 +101,7 @@ export default {
               let type = response.data.type
               switch (type) {
                 case '1':
-                  _this.type_text = 'Function'
+                  _this.type_text = 'Functionality'
                   break
                 case '2':
                   _this.type_text = 'Directive'
@@ -132,6 +158,8 @@ export default {
     margin: auto auto;
   }
   #content{
+    width: 600px;
+    margin: 0 auto;
     margin-top: 200px;
     margin-bottom: 40px;
     transition: margin-top 1s;
@@ -149,8 +177,12 @@ export default {
     border: none!important;
     box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04) !important;
   }
+  h4{
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
   #prediction{
-    margin: 40px auto 0 auto;
+    margin: 0 auto 0 auto;
     width: 600px;
     padding: 20px 20px;
     background-color: #909399;
@@ -158,8 +190,22 @@ export default {
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
   }
-  #prediction_content{
+  .p_content{
     margin-bottom: 0 !important;
+  }
+  #introduction{
+    width: 600px;
+    margin: 10px auto;
+    padding: 20px 20px;
+    background-color: #f5f6fc;
+    color: #1f2129;
+    border-radius: 5px;
+     /*box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);*/
+  }
+  .intro_name{
+    color: #F56C6C!important;
+    margin-bottom: 5px!important;
+    font-weight: bold;
   }
   #input_frame{
     width: 600px;
