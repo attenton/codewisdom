@@ -240,16 +240,18 @@ export default {
         .then(response => {
           this.AdjacentNodesNameList = []
           this.relation_name = []
-          response.data.relations.forEach(relation => {
-            this.$set(this.relation_name, this.relation_name.length, relation.name)
-          })
-          response.data.nodes.forEach(nodes => {
-            let node = {}
-            node.id = nodes.id
-            node.name = nodes.name
-            this.$set(this.AdjacentNodesNameList, this.AdjacentNodesNameList.length, node)
-          })
-          this.AdjacentNodesNameList.length -= 1
+          if (response.data.relations.length > 0) {
+            response.data.relations.forEach(relation => {
+              this.$set(this.relation_name, this.relation_name.length, relation.name)
+            })
+            response.data.nodes.forEach(nodes => {
+              let node = {}
+              node.id = nodes.id
+              node.name = nodes.name
+              this.$set(this.AdjacentNodesNameList, this.AdjacentNodesNameList.length, node)
+            })
+            this.AdjacentNodesNameList.length -= 1
+          }
         })
     }
   },

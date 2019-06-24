@@ -107,7 +107,7 @@ export default {
       this.relations = 'None'
       console.log(this.text)
       axios
-        .post('http://127.0.0.1:5000/extractTextEntity/', {text: this.text, flag: this.radio})
+        .post('http://bigcode.fudan.edu.cn/kg/api/entityRetrieval/extractTextEntity/', {text: this.text, flag: this.radio})
         .then(response => {
           if (response.data.terms.length > 0) {
             _this.terms = ''
@@ -262,6 +262,7 @@ export default {
 #title{
   margin-top: 40px;
   margin-bottom: 40px;
+  color: #5F6368;
 }
 #input_frame{
   width: 600px;
