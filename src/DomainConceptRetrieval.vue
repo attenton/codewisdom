@@ -2,6 +2,9 @@
   <div id="DCR">
     <div id="content">
       <h1 id="title" style="text-align: center">Concept Graph Extraction</h1>
+      <div id="intro" ><span style="font-weight: bold">Tips:</span> The Concept Graph Extractor can extracte concepts and relations between them from the text you input. And three formats are currently supported, which are plain text, java code and html code.
+        Press the Extract-Entity button when you fill the editor and choose the correct format. Then it will return nodes(concepts), relations and a graph.
+      </div>
       <div id="radio_g">
         <el-radio-group v-model="radio">
           <el-radio-button label="Plain Text"></el-radio-button>
@@ -13,6 +16,7 @@
         <div class="codemirror">
           <codemirror ref="myCm" v-model="text" :options="cmOptions"></codemirror>
         </div>
+        <el-button id="example" type="warning" @click="example">Plain Text Example</el-button>
         <el-button id="extract" type="success" @click="extract">Extract Entity</el-button>
       </div>
       <div id="Entity" v-show="show">
@@ -98,6 +102,9 @@ export default {
       console.log('this is new code', newCode)
       this.text = newCode
     },
+    example () {
+      this.text = 'StringBuffer class is a thread-safe mutable sequence of characters. A StringBuffer is like a string, but can be modified. '
+    },
     extract () {
       let _this = this
       _this.show = true
@@ -115,7 +122,7 @@ export default {
               _this.terms += '"' + d + '", '
               let node = {}
               node.id = index + 1
-              node.name = d
+              node.name = d.toLowerCase()
               _this.$set(_this.nodes, _this.nodes.length, node)
             })
           }
@@ -124,7 +131,7 @@ export default {
             response.data.relations.forEach(function (d, index) {
               let edge = {}
               edge.id = index + 1
-              edge.name = d[1]
+              edge.name = d[1].toLowerCase()
               let flag = false
               _this.nodes.forEach(function (node, index) {
                 if (d[2] === node.name) {
@@ -264,8 +271,16 @@ export default {
   margin-bottom: 40px;
   color: #5F6368;
 }
+#intro{
+  width: 900px;
+  margin: 20px auto 20px auto;
+  color: #5F6368;
+  background-color: #f5f6fc;
+  border-radius: 5px;
+  padding: 20px 20px;
+}
 #input_frame{
-  width: 600px;
+  width: 900px;
   margin: 20px auto 0 auto;
 }
 .codemirror{
@@ -292,14 +307,15 @@ export default {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 #Entity{
-  width: 600px;
+  width: 900px;
   margin: 20px auto;
 }
 #extract{
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 #radio_g{
   margin: 10px auto;
-  width: 600px;
+  width: 900px;
 }
 </style>

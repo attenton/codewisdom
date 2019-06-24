@@ -78,7 +78,7 @@ export default {
       //   .catch(error => console.log(error))
     },
     example2 () {
-      this.form.sentence = 'For details, see Threads and Swing, a section in The Java Tutorial.'
+      this.form.sentence = 'This is unique only within the scope of the ORB that created the object adapter.'
       // axios
       //   .get('http://bigcode.fudan.edu.cn/kg/api/function/functionExample/')
       //   .then(response => {
@@ -158,7 +158,7 @@ export default {
     margin: auto auto;
   }
   #content{
-    width: 600px;
+    width: 800px;
     margin: 0 auto;
     margin-top: 200px;
     margin-bottom: 40px;
@@ -183,7 +183,7 @@ export default {
   }
   #prediction{
     margin: 0 auto 0 auto;
-    width: 600px;
+    width: 800px;
     padding: 20px 20px;
     background-color: #909399;
     color: white;
@@ -194,7 +194,7 @@ export default {
     margin-bottom: 0 !important;
   }
   #introduction{
-    width: 600px;
+    width: 800px;
     margin: 10px auto;
     padding: 20px 20px;
     background-color: #f5f6fc;
@@ -208,13 +208,13 @@ export default {
     font-weight: bold;
   }
   #input_frame{
-    width: 600px;
+    width: 800px;
     margin: 20px auto 0 auto;
   }
   #error{
     margin: 40px auto 0 auto;
     font-family: "Raleway";
-    width: 600px;
+    width: 800px;
     background-color: #F56C6C;
     color: white;
     border-radius: 5px;
