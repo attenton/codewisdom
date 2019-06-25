@@ -11,6 +11,7 @@ import EntityLink from '../EntityLink'
 import EntityRecognition from '../EntityRecognition'
 import SentenceClassification from '../SentenceClassification'
 import ElementGraph from '../showElementsGraph'
+import Discover from '../Discover'
 
 Vue.use(Router)
 
@@ -70,6 +71,11 @@ export default new Router({
       path: '/ElementGraph/:id',
       name: 'ElementGraph',
       component: ElementGraph
+    },
+    {
+      path: '/Discover',
+      name: 'Discover',
+      component: Discover
     }
   ]
 })

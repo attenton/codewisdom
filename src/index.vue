@@ -10,7 +10,7 @@
                 You can explore interested API knowledge by searching and graph-based navigating.
                 You can also get what you want to know by asking questions.
                 The current version supports JDK and Android APIs.</h2>
-            <el-button class="dis" type="primary" plain style="cursor: not-allowed">Discover</el-button>
+            <el-button class="dis" type="primary" plain @click="discover">Discover</el-button>
         </div>
     </div>
 
@@ -98,7 +98,7 @@ export default {
   },
   methods: {
     discover () {
-      this.$router.push('Search')
+      this.$router.push('Discover')
     }
   },
   mounted () {
@@ -158,23 +158,23 @@ export default {
     border-color: rgba(255,255,255,0.5);
     background: rgba(64,158,255,0) !important;
 }
-/*.el-button--primary.is-plain:hover{*/
-/*    !*border-color: rgba(255,255,255,0.8) !important;*!*/
-/*    background: #1e88e5 !important;*/
-/*    border-color: #1e88e5;*/
-/*}*/
-/*.el-button--primary.is-plain:focus{*/
-/*    background: #1e88e5 !important;*/
-/*    border-color: #1e88e5;*/
-/*}*/
-/*.dis:hover{*/
-/*  transition:all .5s;*/
-/*  transform: translateY(-5px);*/
-/*}*/
+.el-button--primary.is-plain:hover{
+    /*border-color: rgba(255,255,255,0.8) !important;*/
+    background: #1e88e5 !important;
+    border-color: #1e88e5;
+}
+.el-button--primary.is-plain:focus{
+    background: #1e88e5 !important;
+    border-color: #1e88e5;
+}
+.dis:hover{
+  transition:all .5s;
+  transform: translateY(-5px);
+}
 
 #Statistics{
     width: 100%;
-    height: 600px;
+    /*height: 600px;*/
     margin: 0 auto;
     padding: 50px;
 }
@@ -194,12 +194,14 @@ export default {
     boder: 1px solid #ebeef5 !important;
 
 }
+.outer{
+}
 .outer:hover{
   margin-top: -5px;
 }
 .el-card__body{
-    font-weight: bold;
-    text-align: center;
+  font-weight: bold;
+  text-align: center;
 }
 .inner > a > .el-card > .el-card__body{
   overflow: hidden !important;
@@ -219,14 +221,14 @@ export default {
 
 }
 .inner{
-
+  /*font-weight: bold;*/
 }
 a:hover{
     text-decoration: none;
 }
 .inner_card{
     border: 1px solid rgba(255,255,255,0);
-    font-size: 14px !important;
+    font-size: 16px !important;
     margin-top: 8px;
     color: #1e88e5;
 }
