@@ -11,6 +11,7 @@
                 You can also get what you want to know by asking questions.
                 The current version supports JDK and Android APIs.</h2>
             <el-button class="dis" type="primary" plain @click="discover">Discover</el-button>
+            <el-button class="dis" type="primary" plain @click="search">Search</el-button>
         </div>
     </div>
 
@@ -99,6 +100,9 @@ export default {
   methods: {
     discover () {
       this.$router.push('Discover')
+    },
+    search () {
+      this.$router.push('Search')
     }
   },
   mounted () {
