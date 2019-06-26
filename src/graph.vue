@@ -69,16 +69,6 @@ export default {
           this.graph.read(this.graph_data)
         })
         .catch(error => console.log(error))
-    },
-    initG6 () {
-      this.graph = new G6.Graph({
-        modes: {
-          default: ['panCanvas']
-        },
-        container: 'mountNode',
-        width: 1000,
-        height: 1000
-      })
     }
   },
   created () {

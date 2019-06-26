@@ -1,11 +1,10 @@
-import * as d3 from 'd3'
+/* global d3, document */
+/* jshint latedef:nofunc */
 
 function Neo4jD3 (_selector, _options) {
   // eslint-disable-next-line one-var,no-unused-vars
-  var container, graph, info, node, relationship, relationshipOutline, relationshipOverlay, relationshipText, selector, simulation, svg, svgNodes, svgRelationships, svgScale, svgTranslate,
+  var container, graph, info, node, nodes, relationship, relationshipOutline, relationshipOverlay, relationshipText, relationships, selector, simulation, svg, svgNodes, svgRelationships, svgScale, svgTranslate,
     classes2colors = {},
-    nodes = [],
-    relationships = [],
     justLoaded = false,
     numClasses = 0,
     options = {
@@ -18,7 +17,6 @@ function Neo4jD3 (_selector, _options) {
       images: undefined,
       infoPanel: true,
       minCollision: undefined,
-      D3Data: undefined,
       neo4jData: undefined,
       neo4jDataUrl: undefined,
       nodeOutlineFillColor: undefined,
@@ -59,12 +57,6 @@ function Neo4jD3 (_selector, _options) {
 
     svgNodes = svg.append('g')
       .attr('class', 'nodes')
-  }
-
-  function cleanGraph () {
-    nodes = []
-    relationships = []
-    updateGraph()
   }
 
   function appendImageToNode (node) {
@@ -410,6 +402,7 @@ function Neo4jD3 (_selector, _options) {
     }
   }
 
+  // eslint-disable-next-line no-unused-vars
   function extend (obj1, obj2) {
     var obj = {}
 
@@ -454,17 +447,17 @@ function Neo4jD3 (_selector, _options) {
           switch (labelPropertyValue.length) {
             case 3:
               value = labelPropertyValue[2]
-              /* falls through */
+            /* falls through */
             case 2:
               property = labelPropertyValue[1]
-              /* falls through */
+            /* falls through */
             case 1:
               label = labelPropertyValue[0]
           }
 
           if (d.labels[0] === label &&
-                        (!property || d.properties[property] !== undefined) &&
-                        (!value || d.properties[property] === value)) {
+            (!property || d.properties[property] !== undefined) &&
+            (!value || d.properties[property] === value)) {
             if (labelPropertyValue.length > imgLevel) {
               img = options.images[imagesForLabel[i]]
               imgLevel = labelPropertyValue.length
@@ -507,18 +500,13 @@ function Neo4jD3 (_selector, _options) {
 
     simulation = initSimulation()
 
-    if (options.D3Data) {
-      updateWithD3Data(options.D3Data)
+    if (options.neo4jData) {
+      loadNeo4jData(options.neo4jData)
+    } else if (options.neo4jDataUrl) {
+      loadNeo4jDataFromUrl(options.neo4jDataUrl)
     } else {
-      console.error('initial D3Data from config is empty!')
+      console.error('Error: both neo4jData and neo4jDataUrl are empty!')
     }
-    // if (options.neo4jData) {
-    //   loadNeo4jData(options.neo4jData)
-    // } else if (options.neo4jDataUrl) {
-    //   loadNeo4jDataFromUrl(options.neo4jDataUrl)
-    // } else {
-    //   console.error('Error: both neo4jData and neo4jDataUrl are empty!')
-    // }
   }
 
   function initIconMap () {
@@ -534,8 +522,7 @@ function Neo4jD3 (_selector, _options) {
   }
 
   function initImageMap () {
-    // eslint-disable-next-line no-unused-vars
-    var key, keys, selector
+    var key, keys
 
     for (key in options.images) {
       if (options.images.hasOwnProperty(key)) {
@@ -731,24 +718,24 @@ function Neo4jD3 (_selector, _options) {
     }
   }
   /*
-    function smoothTransform(elem, translate, scale) {
-        var animationMilliseconds = 5000,
-            timeoutMilliseconds = 50,
-            steps = parseInt(animationMilliseconds / timeoutMilliseconds);
-        setTimeout(function() {
-            smoothTransformStep(elem, translate, scale, timeoutMilliseconds, 1, steps);
-        }, timeoutMilliseconds);
-    }
-    function smoothTransformStep(elem, translate, scale, timeoutMilliseconds, step, steps) {
-        var progress = step / steps;
-        elem.attr('transform', 'translate(' + (translate[0] * progress) + ', ' + (translate[1] * progress) + ') scale(' + (scale * progress) + ')');
-        if (step < steps) {
-            setTimeout(function() {
-                smoothTransformStep(elem, translate, scale, timeoutMilliseconds, step + 1, steps);
-            }, timeoutMilliseconds);
-        }
-    }
-*/
+      function smoothTransform(elem, translate, scale) {
+          var animationMilliseconds = 5000,
+              timeoutMilliseconds = 50,
+              steps = parseInt(animationMilliseconds / timeoutMilliseconds);
+          setTimeout(function() {
+              smoothTransformStep(elem, translate, scale, timeoutMilliseconds, 1, steps);
+          }, timeoutMilliseconds);
+      }
+      function smoothTransformStep(elem, translate, scale, timeoutMilliseconds, step, steps) {
+          var progress = step / steps;
+          elem.attr('transform', 'translate(' + (translate[0] * progress) + ', ' + (translate[1] * progress) + ') scale(' + (scale * progress) + ')');
+          if (step < steps) {
+              setTimeout(function() {
+                  smoothTransformStep(elem, translate, scale, timeoutMilliseconds, step + 1, steps);
+              }, timeoutMilliseconds);
+          }
+      }
+  */
   function stickNode (d) {
     d.fx = d3.event.x
     d.fy = d3.event.y
@@ -813,17 +800,17 @@ function Neo4jD3 (_selector, _options) {
           rotatedPointG2 = rotatePoint(center, { x: d.target.x - d.source.x - textMargin.x, y: d.target.y - d.source.y - textMargin.y }, angle)
 
         return 'M ' + rotatedPointA1.x + ' ' + rotatedPointA1.y +
-                       ' L ' + rotatedPointB1.x + ' ' + rotatedPointB1.y +
-                       ' L ' + rotatedPointC1.x + ' ' + rotatedPointC1.y +
-                       ' L ' + rotatedPointD1.x + ' ' + rotatedPointD1.y +
-                       ' Z M ' + rotatedPointA2.x + ' ' + rotatedPointA2.y +
-                       ' L ' + rotatedPointB2.x + ' ' + rotatedPointB2.y +
-                       ' L ' + rotatedPointC2.x + ' ' + rotatedPointC2.y +
-                       ' L ' + rotatedPointD2.x + ' ' + rotatedPointD2.y +
-                       ' L ' + rotatedPointE2.x + ' ' + rotatedPointE2.y +
-                       ' L ' + rotatedPointF2.x + ' ' + rotatedPointF2.y +
-                       ' L ' + rotatedPointG2.x + ' ' + rotatedPointG2.y +
-                       ' Z'
+          ' L ' + rotatedPointB1.x + ' ' + rotatedPointB1.y +
+          ' L ' + rotatedPointC1.x + ' ' + rotatedPointC1.y +
+          ' L ' + rotatedPointD1.x + ' ' + rotatedPointD1.y +
+          ' Z M ' + rotatedPointA2.x + ' ' + rotatedPointA2.y +
+          ' L ' + rotatedPointB2.x + ' ' + rotatedPointB2.y +
+          ' L ' + rotatedPointC2.x + ' ' + rotatedPointC2.y +
+          ' L ' + rotatedPointD2.x + ' ' + rotatedPointD2.y +
+          ' L ' + rotatedPointE2.x + ' ' + rotatedPointE2.y +
+          ' L ' + rotatedPointF2.x + ' ' + rotatedPointF2.y +
+          ' L ' + rotatedPointG2.x + ' ' + rotatedPointG2.y +
+          ' Z'
       })
     })
   }
@@ -841,10 +828,10 @@ function Neo4jD3 (_selector, _options) {
         rotatedPointD = rotatePoint(center, { x: 0 + n.x - n1.x, y: 0 + n.y - n1.y }, angle)
 
       return 'M ' + rotatedPointA.x + ' ' + rotatedPointA.y +
-                   ' L ' + rotatedPointB.x + ' ' + rotatedPointB.y +
-                   ' L ' + rotatedPointC.x + ' ' + rotatedPointC.y +
-                   ' L ' + rotatedPointD.x + ' ' + rotatedPointD.y +
-                   ' Z'
+        ' L ' + rotatedPointB.x + ' ' + rotatedPointB.y +
+        ' L ' + rotatedPointC.x + ' ' + rotatedPointC.y +
+        ' L ' + rotatedPointD.x + ' ' + rotatedPointD.y +
+        ' Z'
     })
   }
 
@@ -895,8 +882,6 @@ function Neo4jD3 (_selector, _options) {
   }
 
   function updateWithD3Data (d3Data) {
-    console.log('d3Data')
-    console.log(d3Data)
     updateNodesAndRelationships(d3Data.nodes, d3Data.relationships)
   }
 
@@ -921,35 +906,9 @@ function Neo4jD3 (_selector, _options) {
     })
   }
 
-  function fillLabelsForNode (n) {
-    if (n.labels) { return n } else { n.labels = ['concept'] }
-    return n
-  }
-
-  function fillLabelsForNodes (nodesArray) {
-    let result = []
-    for (let node of nodesArray) {
-      result.push(fillLabelsForNode(node))
-    }
-    return result
-  }
-
   function updateNodes (n) {
-    // Array.prototype.push.apply(nodes, n)
-    n = fillLabelsForNodes(n)
-    // eslint-disable-next-line camelcase
-    for (let new_node of n) {
-      let exist = false
-      // eslint-disable-next-line camelcase
-      for (let exist_node of nodes) {
-        if (new_node.id === exist_node.id) {
-          exist = true
-        }
-      }
-      if (exist === false) {
-        nodes.push(new_node)
-      }
-    }
+    Array.prototype.push.apply(nodes, n)
+
     node = svgNodes.selectAll('.node')
       .data(nodes, function (d) { return d.id })
     var nodeEnter = appendNodeToGraph()
@@ -965,116 +924,7 @@ function Neo4jD3 (_selector, _options) {
   }
 
   function updateRelationships (r) {
-    // 关系分组
-    var linkGroup = {}
-    // 对连接线进行统计和分组，不区分连接线的方向，只要属于同两个实体，即认为是同一组
-    var linkmap = {}
-    if (r) {
-      for (let i = 0; i < r.length; i++) {
-        let key = r[i].source < r[i].target ? r[i].source + ':' + r[i].target : r[i].target + ':' + r[i].source
-        if (!linkmap.hasOwnProperty(key)) {
-          linkmap[key] = 0
-        }
-        linkmap[key] += 1
-        if (!linkGroup.hasOwnProperty(key)) {
-          linkGroup[key] = []
-        }
-        linkGroup[key].push(r[i])
-      }
-      // 为每一条连接线分配size属性，同时对每一组连接线进行编号
-      for (let i = 0; i < r.length; i++) {
-        let key = r[i].source < r[i].target ? r[i].source + ':' + r[i].target : r[i].target + ':' + r[i].source
-        r[i].size = linkmap[key]
-        // 同一组的关系进行编号
-        var group = linkGroup[key]
-        var keyPair = key.split(':')
-        var type = 'noself'// 标示该组关系是指向两个不同实体还是同一个实体
-        if (keyPair[0] === keyPair[1]) {
-          type = 'self'
-        }
-        // 给节点分配编号
-        setLinkNumber(group, type)
-      }
-
-      function setLinkNumber (group, type) {
-        if (group.length === 0) return
-        // 对该分组内的关系按照方向进行分类，此处根据连接的实体ASCII值大小分成两部分
-        var linksA = [], linksB = []
-        for (var i = 0; i < group.length; i++) {
-          var link = group[i]
-          if (link.source < link.target) {
-            linksA.push(link)
-          } else {
-            linksB.push(link)
-          }
-        }
-        // 确定关系最大编号。为了使得连接两个实体的关系曲线呈现对称，根据关系数量奇偶性进行平分。
-        // 特殊情况：当关系都是连接到同一个实体时，不平分
-        var maxLinkNumber = 0
-        if (type === 'self') {
-          maxLinkNumber = group.length
-        } else {
-          maxLinkNumber = group.length % 2 === 0 ? group.length / 2 : (group.length + 1) / 2
-        }
-        var startLinkNumber = 1
-        // 如果两个方向的关系数量一样多，直接分别设置编号即可
-        if (linksA.length === linksB.length) {
-          for (let i = 0; i < linksA.length; i++) {
-            linksA[i].linknum = startLinkNumber++
-          }
-          startLinkNumber = 1
-          for (let i = 0; i < linksB.length; i++) {
-            linksB[i].linknum = startLinkNumber++
-          }
-        } else { // 当两个方向的关系数量不对等时，先对数量少的那组关系从最大编号值进行逆序编号，然后在对另一组数量多的关系从编号1一直编号到最大编号，再对剩余关系进行负编号
-          // 如果抛开负号，可以发现，最终所有关系的编号序列一定是对称的（对称是为了保证后续绘图时曲线的弯曲程度也是对称的）
-          var biggerLinks, smallerLinks
-          if (linksA.length > linksB.length) {
-            biggerLinks = linksA
-            smallerLinks = linksB
-          } else {
-            biggerLinks = linksB
-            smallerLinks = linksA
-          }
-
-          startLinkNumber = maxLinkNumber
-          for (var i = 0; i < smallerLinks.length; i++) {
-            smallerLinks[i].linknum = startLinkNumber--
-          }
-          var tmpNumber = startLinkNumber
-
-          startLinkNumber = 1
-          var p = 0
-          while (startLinkNumber <= maxLinkNumber) {
-            biggerLinks[p++].linknum = startLinkNumber++
-          }
-          // 开始负编号
-          startLinkNumber = 0 - tmpNumber
-          for (var i = p; i < biggerLinks.length; i++) {
-            biggerLinks[i].linknum = startLinkNumber++
-          }
-        }
-      }
-    }
-
-    // eslint-disable-next-line camelcase
-    for (let new_relation of r) {
-      let exist = false
-      console.log('relationships')
-      console.log(relationships)
-      // eslint-disable-next-line camelcase
-      for (let exist_relation of relationships) {
-        if (new_relation.id === exist_relation.id) {
-          exist = true
-        }
-      }
-      if (exist === false) {
-        relationships.push(new_relation)
-      }
-    }
-    // console.log('rela')
-    // console.log(r)
-    // Array.prototype.push.apply(relationships, r)
+    Array.prototype.push.apply(relationships, r)
 
     relationship = svgRelationships.selectAll('.relationship')
       .data(relationships, function (d) { return d.id })
@@ -1132,4 +982,4 @@ function Neo4jD3 (_selector, _options) {
   }
 }
 
-export default { Neo4jD3 }
+export {Neo4jD3}
