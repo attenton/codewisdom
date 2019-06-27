@@ -59,12 +59,21 @@ export default {
     },
     example () {
       this.input5 = 'keybindings are broken in detached views'
+    },
+    graph (id) {
+      this.$router.push({name: 'ElementGraph', params: {id: id}})
     }
   }
 }
 </script>
 
 <style scoped>
+  #search {
+    padding-top: 100px;
+  }
+  #search-box{
+    margin: 0 20%;
+  }
   .el-input__inner{
     outline: none;
   }

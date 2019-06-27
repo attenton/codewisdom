@@ -7,8 +7,7 @@
                 (e.g., libraries, classes, methods, parameters),
                 their descriptive knowledge (e.g., functionalities, directives),
                 and related background knowledge (e.g., concepts about computer and programming).
-                You can explore interested API knowledge by searching and graph-based navigating.
-                You can also get what you want to know by asking questions.
+                You can explore interestingAPI knowledge by searching and graph-based navigating.
                 The current version supports JDK and Android APIs.</h2>
             <el-button class="dis" type="primary" plain @click="discover">Discover</el-button>
             <el-button class="dis" type="primary" plain @click="search">Search</el-button>
@@ -63,9 +62,9 @@
             </div>
             <el-row type="flex" justify="center" >
                 <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="4" :pull="1">
-                    <el-card id="entity_link" title="to be continued">
+                    <a href="http://bigcode.fudan.edu.cn/kg/fl_demo/entity_link.html"><el-card  class="tools_box">
                         Entity Link
-                    </el-card>
+                    </el-card></a>
                 </el-col>
                 <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="4" >
                     <router-link to="/ConceptGraphExtraction"><el-card class="tools_box">
@@ -107,7 +106,7 @@ export default {
   },
   mounted () {
     axios
-      .post('http://bigcode.fudan.edu.cn/kg/api/graph/getPopularNodes/', {top_number: this.top_number})
+      .post('http://bigcode.fudan.edu.cn/kg/api/graph/getPopularNodes/')
       .then(response => { (this.popular_data = response.data.nodes) })
       .catch(error => console.log(error))
     axios

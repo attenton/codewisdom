@@ -51,6 +51,9 @@ export default {
     },
     detail (id) {
       this.$router.push({name: 'KnowledgeData', params: {id: id}})
+    },
+    graph (id) {
+      this.$router.push({name: 'ElementGraph', params: {id: id}})
     }
   },
   mounted () {

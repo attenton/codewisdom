@@ -17,7 +17,7 @@
           <codemirror ref="myCm" v-model="text" :options="cmOptions"></codemirror>
         </div>
         <el-button id="example" type="warning" @click="example">Plain Text Example</el-button>
-        <el-button id="extract" type="success" @click="extract">Extract Entity</el-button>
+        <el-button id="extract" type="success" @click="extract">Extract Concept</el-button>
       </div>
       <div id="Entity" v-show="show">
         <h5>Nodes</h5>

@@ -28,94 +28,94 @@ export default {
       edges: [],
       id: null,
       startData: {
-        'nodes': [
-          {
-            'id': 316472,
-            'labels': [
-              'Software Concept'
-            ],
-            'majority_properties': {
-              'Commons category': [
-                'GPL'
-              ]
-            },
-            'name': 'hello'
-          },
-          {
-            'id': 88740,
-            'labels': [
-              'Software Concept'
-            ],
-            'majority_properties': {
-              'description': 'computer program for editing HTML',
-              'name': 'HTML editor',
-              'wd item id': 'Q726761'
-            },
-            'name': 'HTML editor',
-            'properties': {
-              'Freebase ID': [
-                '/m/0161z0'
-              ]
-            }
-          },
-          {
-            'id': 94002,
-            'labels': [
-              'Software Concept'
-            ],
-            'majority_properties': {
-              'Commons category': [
-                'KompoZer'
-              ],
-              'Commons gallery': [
-                'KompoZer'
-              ],
-              'Quora topic ID': [
-                'Kompozer'
-              ],
-              'SourceForge project': [
-                'kompozer'
-              ],
-              'description': 'WYSIWYG HTML editor',
-              'image': [
-                'KompoZer nahled.png'
-              ],
-              'name': 'KompoZer',
-              'official website': [
-                'http://www.kompozer.net'
-              ],
-              'source code repository': [
-                'http://hg.code.sf.net/p/kompozer/code'
-              ],
-              'wd item id': 'Q161834'
-            },
-            'name': 'KompoZer',
-            'properties': {
-              'Commons category': [
-                'KompoZer'
-              ],
-              'Commons gallery': [
-                'KompoZer'
-              ]
-            }
-          }
-        ],
-        'relationships': [
-          {
-            'target': 316472,
-            'id': 273605,
-            'type': 'license',
-            'source': 94002,
-            'properties': {}
-          },
-          {
-            'target': 88740,
-            'id': 143489,
-            'type': 'instance of',
-            'source': 94002,
-            'properties': {}
-          }
-        ]
+        // 'nodes': [
+        //   {
+        //     'id': 316472,
+        //     'labels': [
+        //       'Software Concept'
+        //     ],
+        //     'majority_properties': {
+        //       'Commons category': [
+        //         'GPL'
+        //       ]
+        //     },
+        //     'name': 'hello'
+        //   },
+        //   {
+        //     'id': 88740,
+        //     'labels': [
+        //       'Software Concept'
+        //     ],
+        //     'majority_properties': {
+        //       'description': 'computer program for editing HTML',
+        //       'name': 'HTML editor',
+        //       'wd item id': 'Q726761'
+        //     },
+        //     'name': 'HTML editor',
+        //     'properties': {
+        //       'Freebase ID': [
+        //         '/m/0161z0'
+        //       ]
+        //     }
+        //   },
+        //   {
+        //     'id': 94002,
+        //     'labels': [
+        //       'Software Concept'
+        //     ],
+        //     'majority_properties': {
+        //       'Commons category': [
+        //         'KompoZer'
+        //       ],
+        //       'Commons gallery': [
+        //         'KompoZer'
+        //       ],
+        //       'Quora topic ID': [
+        //         'Kompozer'
+        //       ],
+        //       'SourceForge project': [
+        //         'kompozer'
+        //       ],
+        //       'description': 'WYSIWYG HTML editor',
+        //       'image': [
+        //         'KompoZer nahled.png'
+        //       ],
+        //       'name': 'KompoZer',
+        //       'official website': [
+        //         'http://www.kompozer.net'
+        //       ],
+        //       'source code repository': [
+        //         'http://hg.code.sf.net/p/kompozer/code'
+        //       ],
+        //       'wd item id': 'Q161834'
+        //     },
+        //     'name': 'KompoZer',
+        //     'properties': {
+        //       'Commons category': [
+        //         'KompoZer'
+        //       ],
+        //       'Commons gallery': [
+        //         'KompoZer'
+        //       ]
+        //     }
+        //   }
+        // ],
+        // 'relationships': [
+        //   {
+        //     'target': 316472,
+        //     'id': 273605,
+        //     'type': 'license',
+        //     'source': 94002,
+        //     'properties': {}
+        //   },
+        //   {
+        //     'target': 88740,
+        //     'id': 143489,
+        //     'type': 'instance of',
+        //     'source': 94002,
+        //     'properties': {}
+        //   }
+        // ]
       }
     }
   },
@@ -180,7 +180,7 @@ export default {
     },
     get_expand_node (id) {
       axios
-        .post('http://bigcode.fudan.edu.cn/kg-debug/expandNode/', {id: id})
+        .post('http://bigcode.fudan.edu.cn/kg/api/graph/expandNode/', {id: id})
         .then(response => {
           console.log(response)
           response.data.relations.forEach((relation) => {
@@ -218,7 +218,7 @@ export default {
     } else {
       this.init_single()
     }
-    // this.get_expand_node(this.id)
+    this.get_expand_node(this.id)
   },
   created () {
     this.id = this.$route.params.id
@@ -233,14 +233,14 @@ export default {
 
 <style scoped>
 #neo4jd3{
-  height: 500px;
-  width: 900px;
-  margin: 50px auto;
+  height: 100%;
+  width: 100%;
+  /*margin: 50px auto;*/
   box-shadow: 0 2px 8px rgba(0,0,0,.3);
 }
 .neo4jd3 {
-  height: 500px;
-  width: 900px;
+  height: 100%;
+  width: 100%;
   overflow: hidden;
 }
 .neo4jd3-graph {
