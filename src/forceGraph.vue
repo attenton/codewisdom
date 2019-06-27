@@ -82,33 +82,35 @@ export default {
     },
     // create canvas
     render () {
-      this.e = document.querySelector('canvas').getContext('2d')
-      this.e.clearRect(0, 0, this.width, this.height)
-      this.e.lineWidth = 1
-      this.e.strokeStyle = 'black'
-      this.e.beginPath()
-      this.edges.forEach(a => {
-        // this.e.strokeStyle = this.label2color(a.label)
-        this.e.moveTo(a.source.x, a.source.y)
-        this.e.lineTo(a.target.x, a.target.y)
-        this.e.stroke()
-      })
-      this.e.lineWidth = 3
-      this.e.strokeStyle = 'white'
-      this.nodes.forEach(a => {
-        this.e.fillStyle = 'red'
+      if (document.querySelector('canvas') !== null) {
+        this.e = document.querySelector('canvas').getContext('2d')
+        this.e.clearRect(0, 0, this.width, this.height)
+        this.e.lineWidth = 1
+        this.e.strokeStyle = 'black'
         this.e.beginPath()
-        // 起始点坐标，圆的半径，起始角，弧度值
-        this.e.arc(a.x, a.y, this.width / 45, 0, 2 * Math.PI)
-        this.e.fill()
-        this.e.stroke()
-      })
-      this.e.font = '14px Comic Sans MS'
-      this.e.fillStyle = 'black'
-      this.e.textAlign = 'center'
-      this.nodes.forEach(a => {
-        this.e.fillText(a.name, a.x, a.y + 2.5 * 2)
-      })
+        this.edges.forEach(a => {
+          // this.e.strokeStyle = this.label2color(a.label)
+          this.e.moveTo(a.source.x, a.source.y)
+          this.e.lineTo(a.target.x, a.target.y)
+          this.e.stroke()
+        })
+        this.e.lineWidth = 3
+        this.e.strokeStyle = 'white'
+        this.nodes.forEach(a => {
+          this.e.fillStyle = 'red'
+          this.e.beginPath()
+          // 起始点坐标，圆的半径，起始角，弧度值
+          this.e.arc(a.x, a.y, this.width / 45, 0, 2 * Math.PI)
+          this.e.fill()
+          this.e.stroke()
+        })
+        this.e.font = '14px Comic Sans MS'
+        this.e.fillStyle = 'black'
+        this.e.textAlign = 'center'
+        this.nodes.forEach(a => {
+          this.e.fillText(a.name, a.x, a.y + 2.5 * 2)
+        })
+      }
     },
     // set line color
     label2color (label) {

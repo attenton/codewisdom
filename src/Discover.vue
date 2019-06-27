@@ -7,7 +7,15 @@
         <div id="button-block">
           <button id="random" @click="get_random_node_by_label">Random</button>
         </div>
-        <div id="nodes-content">
+        <div id="labels">
+          <h3>Labels</h3>
+          <span class="label-radio" :class="{ 'active' : label === 'all'}" @click="query_label('all')">all</span>
+          <span class="label-radio" v-for="(item, index) in publicLabel" :key="index" :class="{ 'active' : label === item.name}" @click="query_label(item.name)">{{item.name}}</span>
+<!--          <el-radio-group v-model="label">-->
+<!--            <el-radio-button v-for="(item,index) in publicLabel" :key="index" :label="item.name"></el-radio-button>-->
+<!--          </el-radio-group>-->
+        </div>
+        <div id="nodes-content" v-loading="loading">
           <div v-for="(item,index) in nodes" :key="index" class="node">
             <span class="number">{{index + 1}}</span>
             <div class="node_block">
@@ -30,20 +38,25 @@ export default {
   data () {
     return {
       nodes: [],
-      label: null
+      label: 'all',
+      publicLabel: [],
+      loading: true
     }
   },
   methods: {
     get_random_node_by_label () {
+      this.loading = true
       axios
         .post('http://bigcode.fudan.edu.cn/kg/api/graph/getRandomNodesByLabel/', {label: this.label})
         .then(response => {
           this.nodes = response.data.nodes
+          this.loading = false
           console.log(this.nodes)
         })
         .catch(error => console.log(error))
     },
     query_label (label) {
+      // if (label === 'all') this.label = null
       this.label = label
       console.log('label')
       console.log(label)
@@ -54,11 +67,25 @@ export default {
     },
     graph (id) {
       this.$router.push({name: 'ElementGraph', params: {id: id}})
+    },
+    getPublicLabels () {
+      axios
+        .post('http://bigcode.fudan.edu.cn/kg/api/graph/getPublicLabels/')
+        .then(response => {
+          this.publicLabel = response.data
+        })
+        .catch(error => console.error(error))
     }
   },
   mounted () {
     this.get_random_node_by_label()
+    this.getPublicLabels()
   }
+  // watch: {
+  //   label: function (val) {
+  //     this.query_label(val)
+  //   }
+  // }
 }
 </script>
 
@@ -121,6 +148,31 @@ export default {
   padding: auto;
   text-align: center;
   border-bottom: 1px solid #e5e9ef
+}
+#labels{
+  padding: 10px 20px;
+}
+.label-radio{
+  text-transform: capitalize;
+  cursor: pointer;
+  user-select: none;
+  display: inline-block;
+  margin-top: 16px;
+  margin-right: 32px;
+  padding: 1px 0;
+  transition: .2s;
+  color: #6c6e7a;
+  border-bottom: 2px solid transparent;
+}
+.active{
+  font-weight: 700;
+  color: #4c5fe2;
+  border-bottom-color: #4c5fe2;
+}
+.label-radio:hover{
+  text-decoration: none;
+  color: #4c5fe2;
+  border-bottom-color: #4c5fe2;
 }
 .node{
   position: relative;

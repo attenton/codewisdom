@@ -19,25 +19,25 @@
         <p><span>Sentence:</span><br>{{show_sentence}}</p>
         <p class="p_content"><span>Prediction:</span>&nbsp;&nbsp;{{type_text}}</p>
       </div>
-      <h4 v-show="preShow">Introduction</h4>
-      <div id="introduction" v-show="preShow">
-        <p class="intro_name">[Functionality]</p>
-        <p>—
-          description of the functionality of API
-          entities. Example: “Object used to report key and button events”.
-        </p>
-        <p class="intro_name">[Directive]</p>
-        <p>—
-          description about the usage of the API such as, correct or
-          incorrect usage situations, constraints on method parameters, situations
-          of exception throwing. Example: “IllegalArgumentException:
-          if the modifiers parameter contains invalid modifiers”.
-        </p>
-        <p class="intro_name">[Other]</p>
-        <p class="p_content ">—
-          all other situations, usually implementation details.
-        </p>
-      </div>
+      <h4>Introduction</h4>
+      <div id="introduction">
+      <p class="intro_name">[Functionality]</p>
+      <p>—
+        description of the functionality of API
+        entities. Example: “Object used to report key and button events”.
+      </p>
+      <p class="intro_name">[Directive]</p>
+      <p>—
+        description about the usage of the API such as, correct or
+        incorrect usage situations, constraints on method parameters, situations
+        of exception throwing. Example: “IllegalArgumentException:
+        if the modifiers parameter contains invalid modifiers”.
+      </p>
+      <p class="intro_name">[Other]</p>
+      <p class="p_content ">—
+        all other situations, usually implementation details.
+      </p>
+    </div>
       <div id="error" v-show="errorShow">
         <span>An error occurred on the server</span>
         <i id="error_close" class="el-icon-close" @click="errorShow = false"></i>
@@ -133,7 +133,7 @@ export default {
             })
         } else {
           _this.$notify({
-            title: 'Warning',
+            title: 'Error',
             message: 'Query cannot be empty',
             type: 'warning'
           })
@@ -153,15 +153,12 @@ export default {
     background-color: #00a2ff!important;
   }
   #SentenceFunction{
-    font-family: "Raleway";
-    padding: 0 auto;
+    padding: 100px auto 0 auto !important;
     margin: auto auto;
   }
   #content{
     width: 800px;
-    margin: 0 auto;
-    margin-top: 200px;
-    margin-bottom: 40px;
+    margin: 50px auto 40px auto;
     transition: margin-top 1s;
   }
   #title{

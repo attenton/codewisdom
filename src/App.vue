@@ -37,6 +37,7 @@ export default {
     -webkit-font-feature-settings: "lunm";
     font-feature-settings: "lunm";
     width: 100%;
+  position: absolute;
     -webkit-font-smoothing: antialiased;
     /*background-color: rgba(245,245,245,0.8);*/
     word-wrap:break-word;

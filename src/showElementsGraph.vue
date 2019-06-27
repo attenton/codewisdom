@@ -10,113 +10,20 @@ import axios from 'axios'
 export default {
   name: 'showElementsGraph',
   props: {
-    graphData: {
-      type: String,
-      default: '0'
-    },
     extend: {
       type: Boolean,
-      default: false
+      default: true
     }
   },
   data () {
     return {
-      loading: false,
+      loading: true,
       nodeData: {},
       neo4jd3: null,
       nodes: [],
       edges: [],
       id: null,
-      startData: {
-        // 'nodes': [
-        //   {
-        //     'id': 316472,
-        //     'labels': [
-        //       'Software Concept'
-        //     ],
-        //     'majority_properties': {
-        //       'Commons category': [
-        //         'GPL'
-        //       ]
-        //     },
-        //     'name': 'hello'
-        //   },
-        //   {
-        //     'id': 88740,
-        //     'labels': [
-        //       'Software Concept'
-        //     ],
-        //     'majority_properties': {
-        //       'description': 'computer program for editing HTML',
-        //       'name': 'HTML editor',
-        //       'wd item id': 'Q726761'
-        //     },
-        //     'name': 'HTML editor',
-        //     'properties': {
-        //       'Freebase ID': [
-        //         '/m/0161z0'
-        //       ]
-        //     }
-        //   },
-        //   {
-        //     'id': 94002,
-        //     'labels': [
-        //       'Software Concept'
-        //     ],
-        //     'majority_properties': {
-        //       'Commons category': [
-        //         'KompoZer'
-        //       ],
-        //       'Commons gallery': [
-        //         'KompoZer'
-        //       ],
-        //       'Quora topic ID': [
-        //         'Kompozer'
-        //       ],
-        //       'SourceForge project': [
-        //         'kompozer'
-        //       ],
-        //       'description': 'WYSIWYG HTML editor',
-        //       'image': [
-        //         'KompoZer nahled.png'
-        //       ],
-        //       'name': 'KompoZer',
-        //       'official website': [
-        //         'http://www.kompozer.net'
-        //       ],
-        //       'source code repository': [
-        //         'http://hg.code.sf.net/p/kompozer/code'
-        //       ],
-        //       'wd item id': 'Q161834'
-        //     },
-        //     'name': 'KompoZer',
-        //     'properties': {
-        //       'Commons category': [
-        //         'KompoZer'
-        //       ],
-        //       'Commons gallery': [
-        //         'KompoZer'
-        //       ]
-        //     }
-        //   }
-        // ],
-        // 'relationships': [
-        //   {
-        //     'target': 316472,
-        //     'id': 273605,
-        //     'type': 'license',
-        //     'source': 94002,
-        //     'properties': {}
-        //   },
-        //   {
-        //     'target': 88740,
-        //     'id': 143489,
-        //     'type': 'instance of',
-        //     'source': 94002,
-        //     'properties': {}
-        //   }
-        // ]
-      }
+      startData: {}
     }
   },
   methods: {
@@ -129,24 +36,39 @@ export default {
         .catch(error => console.error(error))
     },
     init_extend () {
+      this.loading = true
       axios
         .post('http://bigcode.fudan.edu.cn/kg/api/graph/expandNode/', {id: this.id})
         .then(response => {
           console.log(response)
           response.data.relations.forEach((relation) => {
-            let edge = {}
-            edge.end_id = relation.end_id
-            edge.start_id = relation.start_id
-            edge.target = relation.end_id
-            edge.source = relation.start_id
-            edge.id = relation.id
-            edge.type = relation.name
-            edge.properties = relation.properties
-            this.$set(this.edges, this.edges.length, edge)
+            if (this.edges.findIndex(ele => (ele.id === relation.id)) < 0) {
+              let edge = {}
+              edge.end_id = relation.end_id
+              edge.start_id = relation.start_id
+              edge.target = relation.end_id
+              edge.source = relation.start_id
+              edge.id = relation.id
+              edge.type = relation.name
+              edge.properties = relation.properties
+              this.$set(this.edges, this.edges.length, edge)
+            }
+            // let edge = {}
+            // edge.end_id = relation.end_id
+            // edge.start_id = relation.start_id
+            // edge.target = relation.end_id
+            // edge.source = relation.start_id
+            // edge.id = relation.id
+            // edge.type = relation.name
+            // edge.properties = relation.properties
+            // this.$set(this.edges, this.edges.length, edge)
           })
           response.data.nodes.forEach((relatedNode) => {
             // let node = relatedNode.nodes
-            this.$set(this.nodes, this.nodes.length, relatedNode)
+            // this.$set(this.nodes, this.nodes.length, relatedNode)
+            if (this.nodes.findIndex(ele => (ele.id === relatedNode.id)) < 0) {
+              this.$set(this.nodes, this.nodes.length, relatedNode)
+            }
           })
           // this.neo4jd3.cleanGraph()
           console.log('nodes')
@@ -156,6 +78,7 @@ export default {
           this.startData = {'nodes': this.nodes, 'relationships': this.edges}
           // this.neo4jd3.updateWithD3Data(this.startData)
           this.init()
+          this.loading = false
         })
         .catch(error => console.error(error))
     },
@@ -170,7 +93,6 @@ export default {
         minCollision: 60,
         nodeRadius: 25,
         onNodeDoubleClick: function (node) {
-          this.loading = true
           _this.get_expand_node(node.id)
         },
         onRelationshipDoubleClick: function (relationship) {
@@ -179,24 +101,29 @@ export default {
       })
     },
     get_expand_node (id) {
+      this.loading = true
       axios
         .post('http://bigcode.fudan.edu.cn/kg/api/graph/expandNode/', {id: id})
         .then(response => {
           console.log(response)
           response.data.relations.forEach((relation) => {
-            let edge = {}
-            edge.end_id = relation.end_id
-            edge.start_id = relation.start_id
-            edge.target = relation.end_id
-            edge.source = relation.start_id
-            edge.id = relation.id
-            edge.type = relation.name
-            edge.properties = relation.properties
-            this.$set(this.edges, this.edges.length, edge)
+            if (this.edges.findIndex(ele => (ele.id === relation.id)) < 0) {
+              let edge = {}
+              edge.end_id = relation.end_id
+              edge.start_id = relation.start_id
+              edge.target = relation.end_id
+              edge.source = relation.start_id
+              edge.id = relation.id
+              edge.type = relation.name
+              edge.properties = relation.properties
+              this.$set(this.edges, this.edges.length, edge)
+            }
           })
           response.data.nodes.forEach((relatedNode) => {
             // let node = relatedNode.nodes
-            this.$set(this.nodes, this.nodes.length, relatedNode)
+            if (this.nodes.findIndex(ele => (ele.id === relatedNode.id)) < 0) {
+              this.$set(this.nodes, this.nodes.length, relatedNode)
+            }
           })
           // this.neo4jd3.cleanGraph()
           console.log('nodes')
@@ -218,7 +145,7 @@ export default {
     } else {
       this.init_single()
     }
-    this.get_expand_node(this.id)
+    // this.get_expand_node(this.id)
   },
   created () {
     this.id = this.$route.params.id

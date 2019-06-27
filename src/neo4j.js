@@ -251,7 +251,7 @@ function Neo4jD3 (_selector, _options) {
         return 'text' + (icon(d) ? ' icon' : '')
         // return 'text' + d.name
       })
-      .attr('fill', '#ffffff')
+      .attr('fill', '#000')
       .attr('font-size', function (d) {
         return icon(d) ? (options.nodeRadius + 'px') : '10px'
       })

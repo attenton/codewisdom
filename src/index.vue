@@ -7,7 +7,7 @@
                 (e.g., libraries, classes, methods, parameters),
                 their descriptive knowledge (e.g., functionalities, directives),
                 and related background knowledge (e.g., concepts about computer and programming).
-                You can explore interestingAPI knowledge by searching and graph-based navigating.
+                You can explore interesting API knowledge by searching and graph-based navigating.
                 The current version supports JDK and Android APIs.</h2>
             <el-button class="dis" type="primary" plain @click="discover">Discover</el-button>
             <el-button class="dis" type="primary" plain @click="search">Search</el-button>
@@ -234,6 +234,10 @@ a:hover{
     font-size: 16px !important;
     margin-top: 8px;
     color: #1e88e5;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  overflow: hidden;
+  max-width: 300px;
 }
 .inner_card:hover{
     border: 1px solid #ebeef5;

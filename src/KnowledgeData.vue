@@ -22,7 +22,7 @@
             <h4 id="Knowledge_Graph">Knowledge Graph</h4>
             <el-row>
               <el-button @click="graphDisplay" size="small">{{graphString}}</el-button>
-<!--              <el-button @click="GoGraph" size="small">Graph Detail</el-button>-->
+              <el-button @click="GoGraph" size="small">Graph Detail</el-button>
             </el-row>
             <ForceGraph :graphData="id" v-show="graphShow"></ForceGraph>
           </div>
