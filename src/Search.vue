@@ -38,7 +38,7 @@ export default {
     search () {
       this.loading = true
       axios
-        .post('http://bigcode.fudan.edu.cn/kg/api/graph/getRandomNodesByLabel/', {query: this.query})
+        .post('http://bigcode.fudan.edu.cn/kg/api/graph/searchWithBM25/', {query: this.query})
         .then(response => {
           this.nodes = response.data.nodes
           console.log(this.nodes)
@@ -58,7 +58,7 @@ export default {
       this.$router.push({name: 'KnowledgeData', params: {id: id}})
     },
     example () {
-      this.input5 = 'keybindings are broken in detached views'
+      this.input5 = 'How to create a file'
     },
     graph (id) {
       this.$router.push({name: 'ElementGraph', params: {id: id}})

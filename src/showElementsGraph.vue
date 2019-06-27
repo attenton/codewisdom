@@ -106,6 +106,8 @@ export default {
         .post('http://bigcode.fudan.edu.cn/kg/api/graph/expandNode/', {id: id})
         .then(response => {
           console.log(response)
+          let edges = []
+          let nodes = []
           response.data.relations.forEach((relation) => {
             if (this.edges.findIndex(ele => (ele.id === relation.id)) < 0) {
               let edge = {}
@@ -116,12 +118,14 @@ export default {
               edge.id = relation.id
               edge.type = relation.name
               edge.properties = relation.properties
+              edges.push(edge)
               this.$set(this.edges, this.edges.length, edge)
             }
           })
           response.data.nodes.forEach((relatedNode) => {
             // let node = relatedNode.nodes
             if (this.nodes.findIndex(ele => (ele.id === relatedNode.id)) < 0) {
+              nodes.push(relatedNode)
               this.$set(this.nodes, this.nodes.length, relatedNode)
             }
           })
@@ -133,7 +137,7 @@ export default {
           // this.startData = {'nodes': this.nodes, 'relationships': this.edges}
           // this.neo4jd3.updateWithD3Data(this.startData)
           // this.init()
-          this.neo4jd3.updateWithD3Data({'nodes': this.nodes, 'relationships': this.edges})
+          this.neo4jd3.updateWithD3Data({'nodes': nodes, 'relationships': edges})
           this.loading = false
         })
         .catch(error => console.log(error))
