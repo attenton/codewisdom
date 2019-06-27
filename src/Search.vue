@@ -1,7 +1,7 @@
 <template>
     <div id="search">
       <div id="search-box" style="margin: 100px 20%;">
-        <el-input  placeholder="Input Entity for Searching" v-model="input5" @keyup.enter.native="search">
+        <el-input  placeholder="Input Entity for Searching" v-model="query" @keyup.enter.native="search">
           <el-button type="info" icon="el-icon-info" slot="prepend" @click="openInfo" ></el-button>
           <el-button type="primary" icon="el-icon-search" slot="append" @click="search">Search</el-button>
         </el-input>
@@ -12,7 +12,7 @@
           <span class="number">{{index + 1}}</span>
           <div class="node_block">
             <h4 class="name" @click="detail(item.id)" :title="item.name">{{item.name}}</h4>
-            <el-tag v-for="(label, i) in item.labels" type="item.type" effect="dark" :key="i" @click="query_label(label)">{{label}}</el-tag>
+            <el-tag v-for="(label, i) in item.labels" type="item.type" effect="dark" :key="i">{{label}}</el-tag>
             <button class="graph-button" @click="graph(item.id)">Graph</button>
           </div>
           <button class="detail-button" @click="detail(item.id)">Learn More</button>
@@ -58,7 +58,7 @@ export default {
       this.$router.push({name: 'KnowledgeData', params: {id: id}})
     },
     example () {
-      this.input5 = 'How to create a file'
+      this.query = 'How to create a file'
     },
     graph (id) {
       this.$router.push({name: 'ElementGraph', params: {id: id}})
