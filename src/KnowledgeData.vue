@@ -18,6 +18,27 @@
           <h1>{{ name }} </h1>
           <div><span class="node_tag" :style="{ background : bColor }">{{ labels[0] }}</span></div>
           <hr>
+          <div id="relationDiv" v-show="relation_name.length > 0" class="section">
+            <h4 id="Relations">Relations</h4>
+            <hr>
+            <div >
+              <table class="table table-bordered table-hover" style="width: 50%;">
+                <thead>
+                <tr>
+                  <th>key</th>
+                  <th>value</th>
+                </tr>
+                </thead>
+                <tbody v-for="(item,index) in AdjacentNodesNameList" :key=" index  + 'adjacentNode'">
+                <tr v-show="index < relation_show">
+                  <td>{{relation_name[index]}}</td>
+                  <td><router-link :to="/KnowledgeData/ + item.id">{{item.name}}</router-link></td>
+                </tr>
+                </tbody>
+              </table>
+              <el-button type="text" @click="show_more_relation" v-show="relation_show < relation_name.length || r_show != '+more'">{{r_show}}</el-button>
+            </div>
+          </div>
           <div id="graph" class="section">
             <h4 id="Knowledge_Graph">Knowledge Graph</h4>
             <el-row>
@@ -39,27 +60,7 @@
               <!--</div>-->
             </div>
           </div>
-          <div id="relationDiv" v-show="relation_name.length > 0" class="section">
-            <h4 id="Relations">Relations</h4>
-            <hr>
-            <div >
-              <table class="table table-bordered table-hover" style="width: 50%;">
-                <thead>
-                  <tr>
-                    <th>key</th>
-                    <th>value</th>
-                  </tr>
-                </thead>
-                <tbody v-for="(item,index) in AdjacentNodesNameList" :key=" index  + 'adjacentNode'">
-                  <tr v-show="index < relation_show">
-                    <td>{{relation_name[index]}}</td>
-                    <td><router-link :to="/KnowledgeData/ + item.id">{{item.name}}</router-link></td>
-                  </tr>
-                </tbody>
-              </table>
-              <el-button type="text" @click="show_more_relation" v-show="relation_show < relation_name.length || r_show != '+more'">{{r_show}}</el-button>
-            </div>
-          </div>
+
           <div id="language" v-show="lang.length > 0" class="section">
             <h4 id="Labels">Labels</h4>
             <hr>
@@ -235,6 +236,7 @@ export default {
       }
     },
     getNodeRelation () {
+      let _this = this
       axios
         .post('http://bigcode.fudan.edu.cn/kg/api/graph/expandNode/', {id: this.id})
         .then(response => {
@@ -245,12 +247,13 @@ export default {
               this.$set(this.relation_name, this.relation_name.length, relation.name)
             })
             response.data.nodes.forEach(nodes => {
-              let node = {}
-              node.id = nodes.id
-              node.name = nodes.name
-              this.$set(this.AdjacentNodesNameList, this.AdjacentNodesNameList.length, node)
+              if (nodes.id !== _this.id) {
+                let node = {}
+                node.id = nodes.id
+                node.name = nodes.name
+                this.$set(this.AdjacentNodesNameList, this.AdjacentNodesNameList.length, node)
+              }
             })
-            this.AdjacentNodesNameList.length -= 1
           }
         })
     }
