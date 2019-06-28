@@ -62,7 +62,7 @@
             </div>
             <el-row type="flex" justify="center" >
                 <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="4" :pull="1">
-                    <a href="http://bigcode.fudan.edu.cn/kg/fl_demo/entity_link.html"><el-card  class="tools_box">
+                    <a href="http://bigcode.fudan.edu.cn/kg/fl_demo/index.html"><el-card  class="tools_box">
                         Entity Link
                     </el-card></a>
                 </el-col>
